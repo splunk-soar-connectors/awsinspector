@@ -9,7 +9,7 @@
     "product_name": "Inspector",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) Splunk, 2019",
+    "license": "Copyright (c) 2019 Splunk Inc.",
     "app_version": "1.0.0",
     "utctime_updated": "2019-05-21T09:29:18.681435Z",
     "package_name": "phantom_awsinspector",
@@ -131,7 +131,10 @@
                     "data_path": "action_result.parameter.resource_group_arn",
                     "data_type": "string",
                     "column_name": "Resource Group ARN",
-                    "column_order": 2
+                    "column_order": 2,
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:resourcegroup/0-He7VMMwP"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.target_name",
@@ -168,7 +171,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Total target arn: 1"
+                        "Target is added successfully"
                     ]
                 },
                 {
@@ -246,7 +249,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Total target arn: 1"
+                        "Target is removed successfully"
                     ]
                 },
                 {
@@ -298,7 +301,10 @@
                     "description": "Name of template",
                     "data_type": "string",
                     "required": false,
-                    "primary": false,
+                    "primary": true,
+                    "contains": [
+                        "aws inspector template name"
+                    ],
                     "order": 2
                 }
             },
@@ -322,17 +328,19 @@
                     "data_type": "string",
                     "contains": [
                         "aws inspector target arn"
+                    ],
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-6oqI2Cov"
                     ]
                 },
                 {
                     "data_path": "action_result.parameter.template_name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*",
                     "data_type": "string",
+                    "contains": [
+                        "aws inspector template name"
+                    ],
                     "example_values": [
-                        "arn:aws:inspector:us-east-1:849257271967:target/0-6oqI2Cov/template/0-26yzApF2"
+                        "Assessment-Template-Default"
                     ]
                 },
                 {
@@ -376,6 +384,9 @@
                 {
                     "data_path": "action_result.data.*.assessmentTemplates.*.name",
                     "data_type": "string",
+                    "contains": [
+                        "aws inspector template name"
+                    ],
                     "example_values": [
                         "Assessment-Template-Default"
                     ]
@@ -463,20 +474,19 @@
                     "data_path": "action_result.parameter.limit",
                     "data_type": "numeric",
                     "column_name": "Limit",
-                    "column_order": 0
+                    "column_order": 0,
+                    "example_values": [
+                        10
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.target_name",
                     "data_type": "string",
                     "contains": [
                         "aws inspector target name"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*",
-                    "data_type": "string",
+                    ],
                     "example_values": [
-                        "arn:aws:inspector:us-east-1:849257271967:target/0-UkimI47W"
+                        "test_target"
                     ]
                 },
                 {

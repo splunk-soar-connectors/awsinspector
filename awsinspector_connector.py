@@ -1,4 +1,8 @@
-# -----------------------------------------
+# File: awsinspector_connector.py
+# Copyright (c) 2019 Splunk Inc.
+#
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.# -----------------------------------------
 # Phantom sample App Connector python file
 # -----------------------------------------
 
@@ -25,6 +29,9 @@ class RetVal(tuple):
 class AwsInspectorConnector(BaseConnector):
 
     def __init__(self):
+        """
+        The constructor for AwsInspectorConnector class.
+        """
 
         # Call the BaseConnectors init first
         super(AwsInspectorConnector, self).__init__()
@@ -41,6 +48,10 @@ class AwsInspectorConnector(BaseConnector):
         self._base_url = None
 
     def initialize(self):
+        """ This is an optional function that can be implemented by the AppConnector derived class. Since the
+        configuration dictionary is already validated by the time this function is called, it's a good place to do any
+        extra initialization of any internal modules. This function MUST return a value of either phantom.APP_SUCCESS.
+        """
 
         self._state = self.load_state()
 
@@ -63,12 +74,23 @@ class AwsInspectorConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def finalize(self):
+        """ This function gets called once all the param dictionary elements are looped over and no more handle_action
+        calls are left to be made. It gives the AppConnector a chance to loop through all the results that were
+        accumulated by multiple handle_action function calls and create any summary if required. Another usage is
+        cleanup, disconnect from remote devices etc.
+        :return: Status(phantom.APP_SUCCESS/phantom.APP_ERROR)
+        """
 
         # Save the state, this data is saved across actions and app upgrades
         self.save_state(self._state)
         return phantom.APP_SUCCESS
 
     def _create_client(self, action_result):
+        """This function is used to create a client which is necessary for Boto call
+
+        :param action_result: Object of ActionResult class
+        :return: Status(phantom.APP_SUCCESS/phantom.APP_ERROR)
+        """
 
         try:
 
@@ -92,6 +114,12 @@ class AwsInspectorConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _make_boto_call(self, action_result, method, **kwargs):
+        """This function is used to make the Boto call.
+
+        :param action_result: Object of ActionResult class
+        :param method: Name of the method which is to be called in Boto call
+        :return: Status(phantom.APP_SUCCESS/phantom.APP_ERROR) and response data of Boto call
+        """
 
         try:
             boto_func = getattr(self._client, method)
@@ -106,7 +134,11 @@ class AwsInspectorConnector(BaseConnector):
         return phantom.APP_SUCCESS, resp_json
 
     def _handle_test_connectivity(self, param):
+        """ This function is used to handle the test connectivity action.
 
+        :param param: Dictionary of input parameters
+        :return: Status(phantom.APP_SUCCESS/phantom.APP_ERROR)
+        """
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         self.save_progress("Connecting to endpoint")
@@ -140,7 +172,7 @@ class AwsInspectorConnector(BaseConnector):
         target_name = param.get('target_name')
         limit = param.get('limit', AWSINSPECTOR_MAX_PER_PAGE_LIMIT)
 
-        if (limit and not str(limit).isdigit()) or limit == 0 or limit > 500:
+        if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
 
         filter = {}
@@ -149,8 +181,9 @@ class AwsInspectorConnector(BaseConnector):
 
         kwargs = {}
         kwargs['filter'] = filter
+        kwargs['maxResults'] = limit
 
-        list_targets = self._paginator('list_assessment_targets', limit, action_result, **kwargs)
+        list_targets = self._paginator('list_assessment_targets', action_result, **kwargs)
 
         if list_targets is None:
            return action_result.get_status()
@@ -224,8 +257,9 @@ class AwsInspectorConnector(BaseConnector):
         if target_arns is not None:
             kwargs['assessmentTargetArns'] = target_arns
         kwargs['filter'] = filter
+        kwargs['maxResults'] = limit
 
-        list_templates = self._paginator('list_assessment_templates', limit, action_result, **kwargs)
+        list_templates = self._paginator('list_assessment_templates', action_result, **kwargs)
 
         if list_templates is None:
            return action_result.get_status()
@@ -298,7 +332,7 @@ class AwsInspectorConnector(BaseConnector):
         """ This function is used to delete the existing assessment target from the specific AWS account.
 
         :param param: Dictionary of input parameters
-        :return: status (phantom.APP_ERROR/phantom.APP_SUCCESS), target is deleted successfully
+        :return: Status (phantom.APP_ERROR/phantom.APP_SUCCESS), target is deleted successfully
         """
 
         self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
@@ -308,7 +342,8 @@ class AwsInspectorConnector(BaseConnector):
         if phantom.is_fail(self._create_client(action_result)):
             return action_result.get_status()
 
-        list_targets = self._paginator('list_assessment_targets', None, action_result)
+        list_targets = self._paginator('list_assessment_targets', action_result)
+
         target_arn = param['target_arn']
 
         kwargs = {}
@@ -316,6 +351,8 @@ class AwsInspectorConnector(BaseConnector):
 
         if target_arn in list_targets:
             ret_val, response = self._make_boto_call(action_result, 'delete_assessment_target', **kwargs)
+        else:
+            return action_result.set_status(phantom.APP_ERROR, "Requested target arn does not exist")
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -332,7 +369,14 @@ class AwsInspectorConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, "Target is removed successfully")
 
-    def _paginator(self, method_name, limit, action_result, **kwargs):
+    def _paginator(self, method_name, action_result, **kwargs):
+        """
+        This action is used to create an iterator that will paginate through responses from called methods.
+
+        :param method_name: Name of method whose response is to be paginated
+        :param action_result: Object of ActionResult class
+        :param **kwargs: Dictionary of Input parameters
+        """
 
         list_items = list()
         next_token = None
@@ -342,10 +386,9 @@ class AwsInspectorConnector(BaseConnector):
                 ret_val, response = self._make_boto_call(action_result,
                                                         method_name,
                                                         nextToken=next_token,
-                                                        maxResults=limit,
                                                         **kwargs)
             else:
-                ret_val, response = self._make_boto_call(action_result, method_name, maxResults=limit, **kwargs)
+                ret_val, response = self._make_boto_call(action_result, method_name, **kwargs)
 
             if phantom.is_fail(ret_val):
                 return None
@@ -356,6 +399,7 @@ class AwsInspectorConnector(BaseConnector):
             if response.get('assessmentTemplateArns'):
                 list_items.extend(response.get('assessmentTemplateArns'))
 
+            limit = kwargs.get('maxResults')
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
 
@@ -366,9 +410,12 @@ class AwsInspectorConnector(BaseConnector):
         return list_items
 
     def handle_action(self, param):
+        """ This function gets current action identifier and calls member function of its own to handle the action.
 
+        :param param: Dictionary which contains information about the actions to be executed
+        :return: Status(phantom.APP_SUCCESS/phantom.APP_ERROR)
+        """
         self.debug_print("action_id", self.get_action_identifier())
-
         # Dictionary mapping each action with its corresponding actions
         action_mapping = {
             'test_connectivity': self._handle_test_connectivity,
