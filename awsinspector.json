@@ -564,6 +564,202 @@
                 "type": "table"
             },
             "versions": "EQ(*)"
+        },
+        {
+            "action": "run assessment",
+            "identifier": "run_assessment",
+            "description": "Starts the assessment run specified by the ARN of the assessment template",
+            "type": "generic",
+            "read_only": true,
+            "parameters": {
+                "template_arn": {
+                    "description": "The ARN of the assessment template of the assessment run that you want to start",
+                    "data_type": "string",
+                    "required": true,
+                    "primary": true,
+                    "contains": [
+                        "aws inspector template arn"
+                    ],
+                    "order": 0
+                },
+                "assessment_run_name": {
+                    "description": "The name of the assessment run for the assessment template whose ARN is used to start the assessment run",
+                    "data_type": "string",
+                    "required": false,
+                    "primary": true,
+                    "contains": [
+                        "aws inspector assessment run name"
+                    ],
+                    "order": 1
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRunArn",
+                    "data_type": "string",
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-yHx5BrQI"
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Total assessment run arn: 1",
+                        "Total assessment run arn: 0"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.template_arn",
+                    "data_type": "string",
+                    "column_name": "Template ARN",
+                    "column_order": 0,
+                    "contains": [
+                        "aws inspector template arn"
+                    ],
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_assessment_run_arn",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1,
+                        0
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.assessment_run_name",
+                    "data_type": "string",
+                    "column_name": "Assessment Run Name",
+                    "column_order": 1,
+                    "contains": [
+                        "aws inspector assessment run name"
+                    ],
+                    "example_values": [
+                        "test-template/2019-05-29T06:35/Uom2"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.dataCollected",
+                    "data_type": "boolean",
+                    "example_values": [
+                        true,
+                        false
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "test-template/2019-05-29T09:47/RmfI"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.assessmentTemplateArn",
+                    "data_type": "string",
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.state",
+                    "data_type": "string",
+                    "column_name": "State",
+                    "column_order": 3,
+                    "example_values": [
+                        "COLLECTING_DATA"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.stateChanges.*.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "CREATED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.stateChanges.*.stateChangedAt",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-05-29 09:47:05.863000+00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.stateChangedAt",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-05-29 09:47:06.687000+00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.createdAt",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-05-29 09:47:05.864000+00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.rulesPackageArns",
+                    "data_type": "string",
+                    "column_name": "Rules Package ARN",
+                    "column_order": 4,
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.startedAt",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-05-29 09:47:06.687000+00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.arn",
+                    "data_type": "string",
+                    "column_name": "Assessment Run ARN",
+                    "column_order": 2,
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-D2egFbHs"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.durationInSeconds",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3600
+                    ]
+                }
+            ],
+            "render": {
+                "type": "custom",
+                "title": "Templates",
+                "view": "awsinspector_view.display_view"
+            },
+            "versions": "EQ(*)"
         }
     ]
 }

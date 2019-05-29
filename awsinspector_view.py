@@ -51,6 +51,9 @@ def display_view(provides, all_app_runs, context):
                 continue
             results.append(ctx_result)
 
-    return_page = "awsinspector_list_templates.html"
+    if provides == "run assessment":
+       return_page = "awsinspector_run_assessment.html"
+    elif provides == "list templates":
+        return_page = "awsinspector_list_templates.html"
 
     return return_page

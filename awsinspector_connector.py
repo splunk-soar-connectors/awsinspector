@@ -328,6 +328,67 @@ class AwsInspectorConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS, "Target is added successfully")
 
+    def _handle_run_assessment(self, param):
+        """ This function is used to create a new assessment target to the specific AWS account.
+
+        :param param: Dictionary of input parameters
+        :return: ARN of the assessment target that is created by this action.
+        """
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        if phantom.is_fail(self._create_client(action_result)):
+            return action_result.get_status()
+
+        template_arn = param['template_arn']
+        assessment_run_name = param.get('assessment_run_name')
+
+        kwargs = {}
+        kwargs['assessmentTemplateArn'] = template_arn
+
+        if param.get('assessment_run_name'):
+            kwargs['assessmentRunName'] = assessment_run_name
+
+        assessment_run_arns = self._paginator('start_assessment_run', action_result, **kwargs)
+        # ret_val, response = self._make_boto_call(action_result, 'start_assessment_run', **kwargs)
+
+        if assessment_run_arns is None:
+           return action_result.get_status()
+
+        for arn in assessment_run_arns:
+            self.debug_print("Inside forloop")
+            ret_val, res = self._make_boto_call(action_result, 'describe_assessment_runs', assessmentRunArns=[arn])
+            self.debug_print("data= ", res)
+            assessmentRuns = res.get('assessmentRuns')
+            if assessmentRuns:
+                for as_run in assessmentRuns:
+                    for key, value in as_run.items():
+                        if isinstance(value, datetime.datetime):
+                            as_run[key] = str(value)
+                        if isinstance(value, list):
+                            for val in value:
+                                if isinstance(val, dict):
+                                    for k1, v1 in val.items():
+                                        if isinstance(v1, datetime.datetime):
+                                            val[k1] = str(v1)
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+            try:
+                del res['ResponseMetadata']
+            except:
+                pass
+
+            action_result.add_data(res)
+
+        summary = action_result.update_summary({})
+        summary['total_assessment_run_arn'] = action_result.get_data_size()
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def _handle_delete_target(self, param):
         """ This function is used to delete the existing assessment target from the specific AWS account.
 
@@ -389,6 +450,9 @@ class AwsInspectorConnector(BaseConnector):
                                                         **kwargs)
             else:
                 ret_val, response = self._make_boto_call(action_result, method_name, **kwargs)
+                self.debug_print("In paginator")
+                self.debug_print(response)
+                self.debug_print("End Pagi.")
 
             if phantom.is_fail(ret_val):
                 return None
@@ -399,6 +463,9 @@ class AwsInspectorConnector(BaseConnector):
             if response.get('assessmentTemplateArns'):
                 list_items.extend(response.get('assessmentTemplateArns'))
 
+            if response.get('assessmentRunArn'):
+                list_items.append(response.get('assessmentRunArn'))
+
             limit = kwargs.get('maxResults')
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
@@ -407,6 +474,9 @@ class AwsInspectorConnector(BaseConnector):
             if not next_token:
                 break
 
+        self.debug_print("In paginator next")
+        self.debug_print(list_items)
+        self.debug_print("End Pagi next")
         return list_items
 
     def handle_action(self, param):
@@ -422,7 +492,8 @@ class AwsInspectorConnector(BaseConnector):
             'list_targets': self._handle_list_targets,
             'list_templates': self._handle_list_templates,
             'add_target': self._handle_add_target,
-            'delete_target': self._handle_delete_target
+            'delete_target': self._handle_delete_target,
+            'run_assessment': self._handle_run_assessment
         }
 
         action = self.get_action_identifier()
@@ -474,10 +545,10 @@ if __name__ == '__main__':
 
             headers = dict()
             headers['Cookie'] = 'csrftoken={0}'.format(csrftoken)
-            headers['Referer'] = 'https://127.0.0.1/login'
+            headers['Referer'] = login_url
 
             print ("Logging into Platform to get the session id")
-            r2 = requests.post("https://127.0.0.1/login", verify=False, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=False, data=data, headers=headers)
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print ("Unable to get session id from the platform. Error: {0}".format(str(e)))
