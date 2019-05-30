@@ -389,6 +389,102 @@ class AwsInspectorConnector(BaseConnector):
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
+    def _handle_get_findings(self, param):
+        """ This function is used to fetch templates that correspond to the assessment targets.
+
+        :param param: Dictionary of input parameters
+        :return: list of templates and their info for the specific AWS account
+        """
+
+        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+
+        action_result = self.add_action_result(ActionResult(dict(param)))
+
+        if phantom.is_fail(self._create_client(action_result)):
+            return action_result.get_status()
+
+        filter = {}
+
+        assessment_run_arns = param.get('assessment_run_arns')
+
+        if param.get('assessment_run_arns'):
+            assessment_run_arns = [assessment_run_arn.strip() for assessment_run_arn in assessment_run_arns.split(',')]
+            assessment_run_arns = ' '.join(assessment_run_arns).split()
+
+        agent_ids = param.get('agent_ids')
+        if param.get('agent_ids'):
+            agent_ids = [agent_id.strip() for agent_id in agent_ids.split(',')]
+            agent_ids = ' '.join(agent_ids).split()
+            if len(agent_ids) < 100:
+                filter.update({
+                    'agentIds': agent_ids
+                })
+
+        rule_names = param.get('rule_names')
+        if param.get('rule_names'):
+            rule_names = [rule_name.strip() for rule_name in rule_names.split(',')]
+            rule_names = ' '.join(rule_names).split()
+            if len(agent_ids) < 51:
+                filter.update({
+                    'ruleNames': rule_names
+                })
+
+        severities = param.get('severities')
+        if param.get('severities'):
+            severities = [severity.strip() for severity in severities.split(',')]
+            severities = ' '.join(severities).split()
+            if len(agent_ids) < 51:
+                filter.update({
+                    'severities': severities
+                })
+
+        rule_package_arns = param.get('rule_package_arns')
+        if param.get('rule_package_arns'):
+            rule_package_arns = [rule_package_arn.strip() for rule_package_arn in rule_package_arns.split(',')]
+            rule_package_arns = ' '.join(rule_package_arns).split()
+            if len(agent_ids) < 51:
+                filter.update({
+                    'rulesPackageArns': rule_package_arns
+                })
+
+        kwargs = {}
+        if param.get('assessment_run_arns'):
+            kwargs['assessmentRunArns'] = assessment_run_arns
+        kwargs['filter'] = filter
+
+        list_findings = self._paginator('list_findings', action_result, **kwargs)
+
+        self.debug_print("check type")
+        self.debug_print("Type:-", list_findings)
+        self.debug_print("End check type")
+
+        if list_findings is None:
+           return action_result.get_status()
+
+        for finding in list_findings:
+            ret_val, res = self._make_boto_call(action_result, 'describe_findings', findingArns=[finding])
+            findings = res.get('findings')
+            if findings:
+                for finding in findings:
+                    for key, value in finding.items():
+                        if isinstance(value, datetime.datetime):
+                            finding[key] = str(value)
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
+            try:
+                del res['ResponseMetadata']
+            except:
+                pass
+
+            action_result.add_data(res)
+
+        summary = action_result.update_summary({})
+        summary['total_templates'] = action_result.get_data_size()
+
+        return action_result.set_status(phantom.APP_SUCCESS)
+
     def _handle_delete_target(self, param):
         """ This function is used to delete the existing assessment target from the specific AWS account.
 
@@ -450,9 +546,6 @@ class AwsInspectorConnector(BaseConnector):
                                                         **kwargs)
             else:
                 ret_val, response = self._make_boto_call(action_result, method_name, **kwargs)
-                self.debug_print("In paginator")
-                self.debug_print(response)
-                self.debug_print("End Pagi.")
 
             if phantom.is_fail(ret_val):
                 return None
@@ -466,17 +559,17 @@ class AwsInspectorConnector(BaseConnector):
             if response.get('assessmentRunArn'):
                 list_items.append(response.get('assessmentRunArn'))
 
+            if response.get('findingArns'):
+                list_items.extend(response.get('findingArns'))
+
             limit = kwargs.get('maxResults')
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
 
-            next_token = response.get('NextToken')
+            next_token = response.get('nextToken')
             if not next_token:
                 break
 
-        self.debug_print("In paginator next")
-        self.debug_print(list_items)
-        self.debug_print("End Pagi next")
         return list_items
 
     def handle_action(self, param):
@@ -493,7 +586,8 @@ class AwsInspectorConnector(BaseConnector):
             'list_templates': self._handle_list_templates,
             'add_target': self._handle_add_target,
             'delete_target': self._handle_delete_target,
-            'run_assessment': self._handle_run_assessment
+            'run_assessment': self._handle_run_assessment,
+            'get_findings': self._handle_get_findings
         }
 
         action = self.get_action_identifier()

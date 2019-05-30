@@ -62,7 +62,9 @@
         font-size: 12px;
     }
 
-
+    .awsinspector .dataTable .glyphicon.glyphicon-dot:before {
+       content: "\25cf"; font-size: 10px;
+   }
 </style>
 
 <div class="awsinspector" style="overflow: auto; width: 100% height: 100%; padding-left:10px; padding-right:10px">
@@ -138,13 +140,20 @@
 					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
 				</a>
 			</td>
-			<td>{{ template_data.arn }}</td>
+			<td>
+            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector template arn'],
+				'value':'{{ template_data.arn }}' }], 0,
+				{{ container.id }}, null, false);">
+					{{ template_data.arn }}
+					&nbsp;
+					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+				</a>
+            </td>
 			<td>
 				{% for rule in template_data.rulesPackageArns %}
 					<span class="glyphicon glyphicon-dot"></span>&nbsp;
 					{{ rule }}
 					&nbsp;
-					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
 					{% if not forloop.last %}<br/> 
 					{% endif %}
 				 {% endfor %}

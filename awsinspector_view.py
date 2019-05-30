@@ -55,5 +55,7 @@ def display_view(provides, all_app_runs, context):
        return_page = "awsinspector_run_assessment.html"
     elif provides == "list templates":
         return_page = "awsinspector_list_templates.html"
+    elif provides == "get findings":
+        return_page = "awsinspector_get_findings.html"
 
     return return_page

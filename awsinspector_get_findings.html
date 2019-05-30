@@ -9,7 +9,7 @@
 
 {% block widget_content %} <!-- Main Start Block -->
 
-<!-- File: awsinspector_run_assessment.html
+<!-- File: awsinspector_get_findings.html
   Copyright (c) 2019 Splunk Inc.
 
   SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
@@ -77,25 +77,41 @@
         <div class="info">
         <h4 class="wf-h4-style">Info</h4>
         <table class="wf-table-vertical">
-            {% if result.param.template_arn %}
+            {% if result.param.assessment_run_arns %}
             <tr>
-				<td>Template ARN</td>
-                <td class="widget-td">
-					<a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector template arn'],
-						   'value': '{{ result.param.template_arn }}' }], 0, {{ container.id }}, null, false);">
-					{{ result.param.template_arn }}
-					&nbsp;
-					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-					</a>
-				</td>
+				<td>Assessment Run ARNs</td>
+				<td>{{ result.param.assessment_run_arns }}</td>
             </tr>
             {% endif %}
-            {% if result.param.assessment_run_name %}
+            {% if result.param.agent_ids %}
             <tr>
-				<td>Assessment Run Name</td>
-                <td>
-					{{ result.param.assessment_run_name }}
-				</td>
+				<td>Agent Ids</td>
+                <td>{{ result.param.agent_ids }}</td>
+            </tr>
+            {% endif %}
+            {% if result.param.severities %}
+            <tr>
+				<td>Severities</td>
+                <td>{{ result.param.severities }}</td>
+            </tr>
+            {% endif %}
+            {% if result.param.rule_names %}
+            <tr>
+				<td>Rule Names</td>
+                <td>{{ result.param.rule_names }}</td>
+            </tr>
+            {% endif %}
+            {% if result.param.rule_package_arns %}
+            <tr>
+				<td>Assessment Run ARN</td>
+                {% for rule_package_arn in result.param.rule_package_arns %}
+					<span class="glyphicon glyphicon-dot"></span>&nbsp;
+					{{ rule_package_arn }}
+					&nbsp;
+					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+					{% if not forloop.last %}<br/> 
+					{% endif %}
+				 {% endfor %}
             </tr>
             {% endif %}
         </table>
@@ -106,34 +122,27 @@
         <table class="phantom-table dataTable">
             <thead>
 				<th class="widget-th">Assessment Run ARN</th>
-				<th class="widget-th">State</th>
-				<th class="widget-th">State Changed At</th>
-                <th class="widget-th">State Changes</th>
+				<th class="widget-th">Agent Id</th>
+				<th class="widget-th">Severity</th>
+                <th class="widget-th">Numeric Severity</th>
 				<th class="widget-th">Rules Package ARNs</th>
+                <th class="widget-th">Attributes</th>
             </thead>
-			{% for data in result.data %}
+			{% for data in result.data.findings %}
 			<tr>
-			{% for assessment_run_data in data.assessmentRuns %}
-            <td>{{ assessment_run_data.arn }}</td>
-            <td>{{ assessment_run_data.state }}</td>
-            <td>{{ assessment_run_data.stateChangedAt }}</td>
+			{% for assessment_run_data in data.serviceAttributes.assessmentRunArn %}
+            <td>{{ assessment_run_data.assetAttributes.agentId }}</td>
+            <td>{{ assessment_run_data.severity }}</td>
+            <td>{{ assessment_run_data.numericSeverity }}</td>
+            <td>{{ assessment_run_data.serviceAttributes.rulesPackageArn }}</td>
 			<td>
-				{% for state_change in assessment_run_data.stateChanges %}
+				{% for attribute in assessment_run_data.attributes %}
 					<span class="glyphicon glyphicon-dot"></span>&nbsp;
-                    {% for key, value in state_change.items %}
+                    {% for key, value in attribute.items %}
                         {{ key }} : {{ value }}
                         &nbsp;
                         {% if not forloop.last %}<br/> {% endif %}
                     {% endfor %}
-					&nbsp;
-					{% if not forloop.last %}<br/> 
-					{% endif %}
-				 {% endfor %}
-			</td>
-			<td>
-				{% for rule in assessment_run_data.rulesPackageArns %}
-					<span class="glyphicon glyphicon-dot"></span>&nbsp;
-					{{ rule }}
 					&nbsp;
 					{% if not forloop.last %}<br/> 
 					{% endif %}
