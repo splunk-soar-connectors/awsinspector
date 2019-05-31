@@ -82,7 +82,6 @@
             "action": "test connectivity",
             "identifier": "test_connectivity",
             "description": "Validate the asset configuration for connectivity using supplied configuration",
-            "verbose": "",
             "type": "test",
             "read_only": true,
             "parameters": {},
@@ -93,7 +92,6 @@
             "action": "add target",
             "identifier": "add_target",
             "description": "Creates a new assessment target using the ARN of the resource group",
-            "verbose": "",
             "type": "generic",
             "read_only": false,
             "parameters": {
@@ -105,8 +103,6 @@
                     "contains": [
                         "aws inspector target name"
                     ],
-                    "value_list": [],
-                    "default": "",
                     "order": 0
                 },
                 "resource_group_arn": {
@@ -276,7 +272,7 @@
             "action": "list templates",
             "identifier": "list_templates",
             "description": "Lists the assessment templates that correspond to the assessment targets that are specified by the ARNs of the assessment targets",
-            "verbose": "",
+            "verbose": "The maximum number of 'target_arns' that can be parsed at a time is 50.",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -288,7 +284,7 @@
                     "order": 0
                 },
                 "target_arns": {
-                    "description": "list of ARNs that specifies the assessment targets whose assessment templates are being fetched",
+                    "description": "list of ARNs that specifies the assessment targets whose assessment templates are being fetched, Maximum limit for target_arns is 50",
                     "data_type": "string",
                     "required": false,
                     "primary": true,
@@ -394,6 +390,9 @@
                 {
                     "data_path": "action_result.data.*.assessmentTemplates.*.rulesPackageArns",
                     "data_type": "string",
+                    "contains": [
+                        "aws inspector rules package arn"
+                    ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-R01qwB5Q"
                     ]
@@ -438,7 +437,6 @@
             "action": "list targets",
             "identifier": "list_targets",
             "description": "Lists the ARNs of the assessment targets within AWS account",
-            "verbose": "",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -568,6 +566,7 @@
         {
             "action": "run assessment",
             "identifier": "run_assessment",
+            "verbose": "While one assessment run is in 'COLLECTING_DATA' state then at the same time other assessment runs will get failed.",
             "description": "Starts the assessment run specified by the ARN of the assessment template",
             "type": "generic",
             "read_only": true,
@@ -602,18 +601,15 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.assessmentRunArn",
+                    "data_path": "action_result.parameter.assessment_run_name",
                     "data_type": "string",
+                    "column_name": "Assessment Run Name",
+                    "column_order": 1,
+                    "contains": [
+                        "aws inspector assessment run name"
+                    ],
                     "example_values": [
-                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-yHx5BrQI"
-                    ]
-                },
-                {
-                    "data_path": "action_result.message",
-                    "data_type": "string",
-                    "example_values": [
-                        "Total assessment run arn: 1",
-                        "Total assessment run arn: 0"
+                        "test-template/2019-05-29T06:35/Uom2"
                     ]
                 },
                 {
@@ -629,37 +625,33 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.summary.total_assessment_run_arn",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1,
-                        0
-                    ]
-                },
-                {
-                    "data_path": "summary.total_objects",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.assessment_run_name",
+                    "data_path": "action_result.data.*.assessmentRunArn",
                     "data_type": "string",
-                    "column_name": "Assessment Run Name",
-                    "column_order": 1,
-                    "contains": [
-                        "aws inspector assessment run name"
-                    ],
                     "example_values": [
-                        "test-template/2019-05-29T06:35/Uom2"
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-yHx5BrQI"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.arn",
+                    "data_type": "string",
+                    "column_name": "Assessment Run ARN",
+                    "column_order": 2,
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-D2egFbHs"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.assessmentTemplateArn",
+                    "data_type": "string",
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.createdAt",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-05-29 09:47:05.864000+00:00"
                     ]
                 },
                 {
@@ -671,54 +663,17 @@
                     ]
                 },
                 {
+                    "data_path": "action_result.data.*.assessmentRuns.*.durationInSeconds",
+                    "data_type": "numeric",
+                    "example_values": [
+                        3600
+                    ]
+                },
+                {
                     "data_path": "action_result.data.*.assessmentRuns.*.name",
                     "data_type": "string",
                     "example_values": [
                         "test-template/2019-05-29T09:47/RmfI"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.assessmentRuns.*.assessmentTemplateArn",
-                    "data_type": "string",
-                    "example_values": [
-                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.assessmentRuns.*.state",
-                    "data_type": "string",
-                    "column_name": "State",
-                    "column_order": 3,
-                    "example_values": [
-                        "COLLECTING_DATA"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.assessmentRuns.*.stateChanges.*.state",
-                    "data_type": "string",
-                    "example_values": [
-                        "CREATED"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.assessmentRuns.*.stateChanges.*.stateChangedAt",
-                    "data_type": "string",
-                    "example_values": [
-                        "2019-05-29 09:47:05.863000+00:00"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.assessmentRuns.*.stateChangedAt",
-                    "data_type": "string",
-                    "example_values": [
-                        "2019-05-29 09:47:06.687000+00:00"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.assessmentRuns.*.createdAt",
-                    "data_type": "string",
-                    "example_values": [
-                        "2019-05-29 09:47:05.864000+00:00"
                     ]
                 },
                 {
@@ -738,19 +693,63 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.assessmentRuns.*.arn",
+                    "data_path": "action_result.data.*.assessmentRuns.*.state",
                     "data_type": "string",
-                    "column_name": "Assessment Run ARN",
-                    "column_order": 2,
+                    "column_name": "State",
+                    "column_order": 3,
                     "example_values": [
-                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-D2egFbHs"
+                        "COLLECTING_DATA"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.assessmentRuns.*.durationInSeconds",
+                    "data_path": "action_result.data.*.assessmentRuns.*.stateChangedAt",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-05-29 09:47:06.687000+00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.stateChanges.*.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "CREATED"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.assessmentRuns.*.stateChanges.*.stateChangedAt",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-05-29 09:47:05.863000+00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_assessment_run_arn",
                     "data_type": "numeric",
                     "example_values": [
-                        3600
+                        1,
+                        0
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Total assessment run arn: 1",
+                        "Total assessment run arn: 0"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
                     ]
                 }
             ],
@@ -769,40 +768,42 @@
             "read_only": true,
             "parameters": {
                 "assessment_run_arns": {
-                    "description": "The ARNs of the assessment runs that generate the findings",
+                    "description": "The ARNs of the assessment runs that generate the findings, Maximum limit for assessment_run_arns is 50",
                     "data_type": "string",
                     "required": false,
-                    "primary": false,
+                    "primary": true,
+                    "contains": [
+                        "aws inspector assessment run arn"
+                    ],
                     "order": 0
                 },
                 "agent_ids": {
-                    "description": "Agent Id of the finding",
+                    "description": "Agent Id of the finding, Maximum limit for agent_ids is 99",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
                     "order": 1
                 },
-                "rule_names": {
-                    "description": "Rule name of the finding",
-                    "data_type": "string",
-                    "required": false,
-                    "primary": false,
-                    "order": 2
-                },
                 "severities": {
-                    "description": "The severity of the finding",
+                    "description": "The severity of the finding, Maximum limit for severities is 50",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
+                    "value_list": [
+                        "High",
+                        "Medium",
+                        "Low",
+                        "Informational"
+                    ],
                     "order": 3
                 },
-                "rule_package_arns": {
-                    "description": "The ARN that specifies the rules package",
+                "rules_package_arns": {
+                    "description": "The ARN that specifies the rules package, Maximum limit for rules_package_arns is 50",
                     "data_type": "string",
                     "required": false,
                     "primary": true,
                     "contains": [
-                        "aws inspector rule package arn"
+                        "aws inspector rules package arn"
                     ],
                     "order": 4
                 }
@@ -816,170 +817,153 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.assetType",
+                    "data_path": "action_result.parameter.agent_ids",
                     "data_type": "string",
                     "example_values": [
-                        "ec2-instance"
+                        "i-0edb2f67d116434a5"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.confidence",
-                    "data_type": "numeric",
-                    "example_values": [
-                        10
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.numericSeverity",
-                    "data_type": "numeric",
-                    "example_values": [
-                        6
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.severity",
+                    "data_path": "action_result.parameter.assessment_run_arns",
                     "data_type": "string",
-                    "example_values": [
-                        "Medium"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.service",
-                    "data_type": "string",
-                    "example_values": [
-                        "Inspector"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.title",
-                    "data_type": "string",
-                    "example_values": [
-                        "On instance i-0a9a26fd83f1fd275, TCP port 67 which is associated with 'DHCP' is reachable from the internet"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.indicatorOfCompromise",
-                    "data_type": "boolean",
-                    "example_values": [
-                        true,
-                        false
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.amiId",
-                    "data_type": "string",
-                    "example_values": [
-                        "ami-02eac2c0129f6376b"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.tags.*.key",
-                    "data_type": "string",
-                    "example_values": [
-                        "InstanceOwnerEmail"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.tags.*.value",
-                    "data_type": "string",
-                    "example_values": [
-                        "bob.phantomer@gmail.com"
-                    ],
                     "contains": [
-                        "email"
+                        "aws inspector assessment run arn"
+                    ],
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-weJjg0hC/run/0-ZjmO3RKu"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.hostname",
+                    "data_path": "action_result.parameter.rules_package_arns",
+                    "data_type": "string",
+                    "contains": [
+                        "aws inspector rules package arn"
+                    ],
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.severities",
                     "data_type": "string",
                     "example_values": [
-                        "ec2-3-211-98-228.compute-1.amazonaws.com"
-                    ],
-                    "contains": [
-                        "host name"
+                        "High"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.schemaVersion",
-                    "data_type": "numeric",
+                    "data_path": "action_result.data.*.findings.*.arn",
+                    "data_type": "string",
                     "example_values": [
-                        1
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-weJjg0hC/run/0-ZjmO3RKu/finding/0-13570T6M",
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-weJjg0hC/run/0-ZjmO3RKu/finding/0-cOjmYFiJ"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.findings.*.assetAttributes.agentId",
                     "data_type": "string",
                     "example_values": [
-                        "i-0a9a26fd83f1fd275"
+                        "i-0a9a26fd83f1fd275",
+                        "i-0edb2f67d116434a5"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.vpcId",
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.amiId",
                     "data_type": "string",
                     "example_values": [
-                        "vpc-5113dc2a"
+                        "ami-02eac2c0129f6376b",
+                        "ami-07b8352fea5b7a594"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.privateIpAddresses.*.privateDnsName",
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.hostname",
                     "data_type": "string",
                     "example_values": [
-                        "ip-172-31-34-89.ec2.internal"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.privateIpAddresses.*.privateIpAddress",
-                    "data_type": "string",
-                    "example_values": [
-                        "172.31.34.89"
+                        "ec2-3-211-98-228.compute-1.amazonaws.com",
+                        "ec2-23-20-100-84.compute-1.amazonaws.com"
                     ],
                     "contains": [
-                        "ip"
+                        "host name"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.networkInterfaceId",
                     "data_type": "string",
                     "example_values": [
-                        "eni-084422612470a9c63"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.publicDnsName",
-                    "data_type": "string",
-                    "example_values": [
-                        "ec2-3-211-98-228.compute-1.amazonaws.com"
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.publicIp",
-                    "data_type": "string",
-                    "example_values": [
-                        "3.211.98.228"
-                    ],
-                    "contains": [
-                        "ip"
+                        "eni-084422612470a9c63",
+                        "eni-03bfd52b58267d6e4"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.privateDnsName",
                     "data_type": "string",
                     "example_values": [
-                        "ip-172-31-34-89.ec2.internal"
+                        "ip-172-31-34-89.ec2.internal",
+                        "ip-172-31-45-141.ec2.internal"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.securityGroups.*.groupName",
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.privateIpAddress",
                     "data_type": "string",
                     "example_values": [
-                        "proyer-target-sg-1"
+                        "172.31.34.89",
+                        "172.31.45.141"
+                    ],
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.privateIpAddresses.*.privateDnsName",
+                    "data_type": "string",
+                    "example_values": [
+                        "ip-172-31-34-89.ec2.internal",
+                        "ip-172-31-45-141.ec2.internal"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.privateIpAddresses.*.privateIpAddress",
+                    "data_type": "string",
+                    "example_values": [
+                        "172.31.34.89",
+                        "172.31.45.141"
+                    ],
+                    "contains": [
+                        "ip"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.publicDnsName",
+                    "data_type": "string",
+                    "example_values": [
+                        "ec2-3-211-98-228.compute-1.amazonaws.com",
+                        "ec2-23-20-100-84.compute-1.amazonaws.com"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.publicIp",
+                    "data_type": "string",
+                    "example_values": [
+                        "3.211.98.228",
+                        "23.20.100.84"
+                    ],
+                    "contains": [
+                        "ip"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.securityGroups.*.groupId",
                     "data_type": "string",
                     "example_values": [
-                        "sg-065be60cd09068afa"
+                        "sg-065be60cd09068afa",
+                        "sg-00c60fd41aea33c09"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.securityGroups.*.groupName",
+                    "data_type": "string",
+                    "example_values": [
+                        "proyer-target-sg-1",
+                        "nginx-default-sg"
                     ]
                 },
                 {
@@ -990,34 +974,39 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.privateIpAddress",
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.networkInterfaces.*.vpcId",
                     "data_type": "string",
                     "example_values": [
-                        "172.31.34.89"
-                    ],
-                    "contains": [
-                        "ip"
+                        "vpc-5113dc2a"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.arn",
-                    "data_type": "string",
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.schemaVersion",
+                    "data_type": "numeric",
                     "example_values": [
-                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-weJjg0hC/run/0-ZjmO3RKu/finding/0-13570T6M"
+                        1
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.recommendation",
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.tags.*.key",
                     "data_type": "string",
                     "example_values": [
-                        "You can edit the Security Group sg-065be60cd09068afa to remove access from the internet on port 67"
+                        "InstanceOwnerEmail",
+                        "Name"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.updatedAt",
+                    "data_path": "action_result.data.*.findings.*.assetAttributes.tags.*.value",
                     "data_type": "string",
                     "example_values": [
-                        "2019-05-29 14:08:36.188000+00:00"
+                        "Phantom - User Registration Box"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.assetType",
+                    "data_type": "string",
+                    "example_values": [
+                        "ec2-instance"
                     ]
                 },
                 {
@@ -1031,7 +1020,8 @@
                     "data_path": "action_result.data.*.findings.*.attributes.*.value",
                     "data_type": "string",
                     "example_values": [
-                        "eni-084422612470a9c63"
+                        "eni-084422612470a9c63",
+                        "eni-03bfd52b58267d6e4"
                     ],
                     "contains": [
                         "file path",
@@ -1039,31 +1029,26 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.schemaVersion",
+                    "data_path": "action_result.data.*.findings.*.confidence",
                     "data_type": "numeric",
                     "example_values": [
-                        1
+                        10
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.serviceAttributes.schemaVersion",
-                    "data_type": "numeric",
-                    "example_values": [
-                        1
-                    ]
-                },
-                {
-                    "data_path": "action_result.data.*.findings.*.serviceAttributes.rulesPackageArn",
+                    "data_path": "action_result.data.*.findings.*.createdAt",
                     "data_type": "string",
                     "example_values": [
-                        "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd"
+                        "2019-05-29 14:08:36.188000+00:00",
+                        "2019-05-29 14:09:34.077000+00:00"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.serviceAttributes.assessmentRunArn",
+                    "data_path": "action_result.data.*.findings.*.description",
                     "data_type": "string",
                     "example_values": [
-                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-weJjg0hC/run/0-ZjmO3RKu"
+                        "On this instance, TCP port 67, which is associated with DHCP, is reachable from the internet. You can install the Inspector agent on this instance and re-run the assessment to check for any process listening on this port. The instance i-0a9a26fd83f1fd275 is located in VPC vpc-5113dc2a and has an attached ENI eni-084422612470a9c63 which uses network ACL acl-018ed07a. The port is reachable from the internet through Security Group sg-065be60cd09068afa and IGW igw-0b758073",
+                        "On this instance, TCP port 23, which is associated with Telnet, is reachable from the internet. You can install the Inspector agent on this instance and re-run the assessment to check for any process listening on this port. The instance i-0edb2f67d116434a5 is located in VPC vpc-5113dc2a and has an attached ENI eni-03bfd52b58267d6e4 which uses network ACL acl-018ed07a. The port is reachable from the internet through Security Group sg-00c60fd41aea33c09 and IGW igw-0b758073"
                     ]
                 },
                 {
@@ -1074,25 +1059,93 @@
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.createdAt",
-                    "data_type": "string",
+                    "data_path": "action_result.data.*.findings.*.indicatorOfCompromise",
+                    "data_type": "boolean",
                     "example_values": [
-                        "2019-05-29 14:08:36.188000+00:00"
+                        true,
+                        false
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.findings.*.description",
-                    "data_type": "string",
+                    "data_path": "action_result.data.*.findings.*.numericSeverity",
+                    "data_type": "numeric",
                     "example_values": [
-                        "On this instance, TCP port 67, which is associated with DHCP, is reachable from the internet. You can install the Inspector agent on this instance and re-run the assessment to check for any process listening on this port. The instance i-0a9a26fd83f1fd275 is located in VPC vpc-5113dc2a and has an attached ENI eni-084422612470a9c63 which uses network ACL acl-018ed07a. The port is reachable from the internet through Security Group sg-065be60cd09068afa and IGW igw-0b758073"
+                        6,
+                        9
                     ]
                 },
                 {
-                    "data_path": "action_result.message",
+                    "data_path": "action_result.data.*.findings.*.recommendation",
                     "data_type": "string",
                     "example_values": [
-                        "Total templates: 233",
-                        "Total templates: 0"
+                        "You can edit the Security Group sg-065be60cd09068afa to remove access from the internet on port 67",
+                        "You can edit the Security Group sg-00c60fd41aea33c09 to remove access from the internet on port 23"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.schemaVersion",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.service",
+                    "data_type": "string",
+                    "example_values": [
+                        "Inspector"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.serviceAttributes.assessmentRunArn",
+                    "data_type": "string",
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-weJjg0hC/run/0-ZjmO3RKu"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.serviceAttributes.rulesPackageArn",
+                    "data_type": "string",
+                    "example_values": [
+                        "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.serviceAttributes.schemaVersion",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.severity",
+                    "data_type": "string",
+                    "example_values": [
+                        "Medium",
+                        "High"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.title",
+                    "data_type": "string",
+                    "example_values": [
+                        "On instance i-0a9a26fd83f1fd275, TCP port 67 which is associated with 'DHCP' is reachable from the internet",
+                        "On instance i-0edb2f67d116434a5, TCP port 23 which is associated with 'Telnet' is reachable from the internet"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.findings.*.updatedAt",
+                    "data_type": "string",
+                    "example_values": [
+                        "2019-05-29 14:08:36.188000+00:00",
+                        "2019-05-29 14:09:34.077000+00:00"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.total_findings",
+                    "data_type": "numeric",
+                    "example_values": [
+                        6
                     ]
                 },
                 {
@@ -1101,6 +1154,13 @@
                     "example_values": [
                         233,
                         0
+                    ]
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Total findings: 6"
                     ]
                 },
                 {
@@ -1115,41 +1175,6 @@
                     "data_type": "numeric",
                     "example_values": [
                         1
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.agent_ids",
-                    "data_type": "string",
-                    "example_values": [
-                        "i-0edb2f67d116434a5"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.severities",
-                    "data_type": "string",
-                    "example_values": [
-                        "High"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.rule_names",
-                    "data_type": "string",
-                    "example_values": [
-                        "Network Reachability"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.assessment_run_arns",
-                    "data_type": "string",
-                    "example_values": [
-                        "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-weJjg0hC/run/0-ZjmO3RKu"
-                    ]
-                },
-                {
-                    "data_path": "action_result.parameter.rule_package_arns",
-                    "data_type": "string",
-                    "example_values": [
-                        "arn:aws:inspector:us-east-1:316112463485:rulespackage/0-PmNV0Tcd"
                     ]
                 }
             ],

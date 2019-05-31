@@ -152,7 +152,12 @@
 			<td>
 				{% for rule in template_data.rulesPackageArns %}
 					<span class="glyphicon glyphicon-dot"></span>&nbsp;
+                    <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector rules package arn'],
+						   'value': '{{ rule }}' }], 0, {{ container.id }}, null, false);">
 					{{ rule }}
+					&nbsp;
+					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+					</a>
 					&nbsp;
 					{% if not forloop.last %}<br/> 
 					{% endif %}
