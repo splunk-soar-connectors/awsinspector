@@ -459,7 +459,9 @@ class AwsInspectorConnector(BaseConnector):
             except:
                 pass
 
-            action_result.add_data(res)
+            for finding_detail in findings:
+                action_result.add_data(finding_detail)
+
             del list_findings[:min(10, len(list_findings))]
 
         summary = action_result.update_summary({})
@@ -526,9 +528,6 @@ class AwsInspectorConnector(BaseConnector):
         }
 
         set_name = dic_map.get(self.get_action_identifier())
-        self.debug_print("Test--")
-        self.debug_print(set_name)
-        self.debug_print("Test--end")
 
         while True:
             if next_token:

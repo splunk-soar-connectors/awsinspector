@@ -109,8 +109,7 @@
 				<th class="widget-th">Rules Package ARNs</th>
                 <th class="widget-th">Attributes</th>
             </thead>
-			{% for data in result.data %}
-			{% for finding_data in data.findings %}
+			{% for finding_data in result.data %}
 			<tr>
 			<td>{{finding_data.serviceAttributes.assessmentRunArn }}</td>
             <td>{{ finding_data.assetAttributes.agentId }}</td>
@@ -137,7 +136,6 @@
 					{% endif %}
 				 {% endfor %}
 			</td>
-			{% endfor %}
             </tr>
 			{% endfor %}
         </table>
