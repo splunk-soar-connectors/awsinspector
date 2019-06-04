@@ -83,35 +83,16 @@
 				<td>{{ result.param.assessment_run_arns }}</td>
             </tr>
             {% endif %}
-            {% if result.param.agent_ids %}
+            {% if result.param.limit %}
             <tr>
-				<td>Agent Ids</td>
-                <td>{{ result.param.agent_ids }}</td>
+				<td>Limit</td>
+                <td>{{ result.param.limit }}</td>
             </tr>
             {% endif %}
             {% if result.param.severities %}
             <tr>
 				<td>Severities</td>
                 <td>{{ result.param.severities }}</td>
-            </tr>
-            {% endif %}
-            {% if result.param.rule_names %}
-            <tr>
-				<td>Rule Names</td>
-                <td>{{ result.param.rule_names }}</td>
-            </tr>
-            {% endif %}
-            {% if result.param.rule_package_arns %}
-            <tr>
-				<td>Assessment Run ARN</td>
-                {% for rule_package_arn in result.param.rule_package_arns %}
-					<span class="glyphicon glyphicon-dot"></span>&nbsp;
-					{{ rule_package_arn }}
-					&nbsp;
-					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-					{% if not forloop.last %}<br/> 
-					{% endif %}
-				 {% endfor %}
             </tr>
             {% endif %}
         </table>

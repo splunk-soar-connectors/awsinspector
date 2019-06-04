@@ -2,9 +2,9 @@
 # Copyright (c) 2019 Splunk Inc.
 #
 # SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
-# without a valid written license from Splunk Inc. is PROHIBITED.# -----------------------------------------
-# Phantom sample App Connector python file
-# -----------------------------------------
+# without a valid written license from Splunk Inc. is PROHIBITED.
+#
+
 
 # Phantom App imports
 import phantom.app as phantom
@@ -13,11 +13,11 @@ from phantom.action_result import ActionResult
 from awsinspector_consts import *
 
 # Usage of the consts file is recommended
-# from awsinspector_consts import *
 import requests
 import json
-from boto3 import client
 import datetime
+from boto3 import client
+from botocore.config import Config
 from dateutil.tz import tzlocal
 
 
@@ -92,8 +92,11 @@ class AwsInspectorConnector(BaseConnector):
         :return: Status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
 
-        try:
+        boto_config = None
+        if self._proxy:
+            boto_config = Config(proxies=self._proxy)
 
+        try:
             if self._access_key and self._secret_key:
 
                 self.debug_print("Creating boto3 client with API keys")
@@ -101,12 +104,14 @@ class AwsInspectorConnector(BaseConnector):
                         'inspector',
                         region_name=self._region,
                         aws_access_key_id=self._access_key,
-                        aws_secret_access_key=self._secret_key)
+                        aws_secret_access_key=self._secret_key,
+                        config=boto_config)
             else:
                 self.debug_print("Creating boto3 client without API keys")
                 self._client = client(
                         'inspector',
-                        region_name=self._region)
+                        region_name=self._region,
+                        config=boto_config)
 
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Could not create boto3 client: {0}".format(e))
@@ -188,18 +193,18 @@ class AwsInspectorConnector(BaseConnector):
         if list_targets is None:
            return action_result.get_status()
 
+        tz = tzlocal()
+        self.debug_print(tz)
+        self.debug_print("The response of the action when added to the action_result")
+        self.debug_print("It generates an error that the response data can not be serialized due to datetime object present in the output response")
+        self.debug_print("To resolve that, we are trying to convert the datetime object into a corresponding datetime string")
+        self.debug_print("List targets action's output response contains the datetime object consisting of a tzinfo attribute with the local timezone information")
+        self.debug_print("If we try converting the datetime object in output response directly, we get the error that tzlocal module not found")
+        self.debug_print("To avoid that error we have imported the tzlocal module")
+        self.debug_print("To avoid the error of module is imported but never used, we have created an object of tzlocal and printed it's value in debug_print")
+
         for target in list_targets:
             ret_val, res = self._make_boto_call(action_result, 'describe_assessment_targets', assessmentTargetArns=[target])
-
-            tz = tzlocal()
-            self.debug_print(tz)
-            self.debug_print("The response of the action when added to the action_result")
-            self.debug_print("It generates an error that the response data can not be serialized due to datetime object present in the output response")
-            self.debug_print("To resolve that, we are trying to convert the datetime object into a corresponding datetime string")
-            self.debug_print("List targets action's output response contains the datetime object consisting of a tzinfo attribute with the local timezone information")
-            self.debug_print("If we try converting the datetime object in output response directly, we get the error that tzlocal module not found")
-            self.debug_print("To avoid that error we have imported the tzlocal module")
-            self.debug_print("To avoid the error of module is imported but never used, we have created an object of tzlocal and printed it's value in debug_print")
 
             assessment_targets = res.get('assessmentTargets')
             if assessment_targets:
@@ -216,7 +221,6 @@ class AwsInspectorConnector(BaseConnector):
             except:
                 pass
 
-            # res['ThreatIntelSetId'] = threat
             action_result.add_data(res)
 
         summary = action_result.update_summary({})
@@ -351,38 +355,41 @@ class AwsInspectorConnector(BaseConnector):
         if param.get('assessment_run_name'):
             kwargs['assessmentRunName'] = assessment_run_name
 
-        assessment_run_arns = self._paginator('start_assessment_run', action_result, **kwargs)
-        # ret_val, response = self._make_boto_call(action_result, 'start_assessment_run', **kwargs)
+        # assessment_run_arns = self._paginator('start_assessment_run', action_result, **kwargs)
+        ret, assessment_run = self._make_boto_call(action_result, 'start_assessment_run', **kwargs)
+        if phantom.is_fail(ret):
+            return action_result.get_status()
 
-        if assessment_run_arns is None:
+        assessment_run_arn = assessment_run.get('assessmentRunArn')
+
+        if assessment_run_arn is None:
            return action_result.get_status()
 
-        for arn in assessment_run_arns:
-            self.debug_print("Inside forloop")
-            ret_val, res = self._make_boto_call(action_result, 'describe_assessment_runs', assessmentRunArns=[arn])
-            self.debug_print("data= ", res)
-            assessmentRuns = res.get('assessmentRuns')
-            if assessmentRuns:
-                for as_run in assessmentRuns:
-                    for key, value in as_run.items():
-                        if isinstance(value, datetime.datetime):
-                            as_run[key] = str(value)
-                        if isinstance(value, list):
-                            for val in value:
-                                if isinstance(val, dict):
-                                    for k1, v1 in val.items():
-                                        if isinstance(v1, datetime.datetime):
-                                            val[k1] = str(v1)
+        # for arn in assessment_run_arns:
+        ret_val, res = self._make_boto_call(action_result, 'describe_assessment_runs', assessmentRunArns=[assessment_run_arn])
 
-            if phantom.is_fail(ret_val):
-                return action_result.get_status()
+        if phantom.is_fail(ret_val):
+            return action_result.get_status()
 
-            try:
-                del res['ResponseMetadata']
-            except:
-                pass
+        assessmentRuns = res.get('assessmentRuns')
+        if assessmentRuns:
+            for as_run in assessmentRuns:
+                for key, value in as_run.items():
+                    if isinstance(value, datetime.datetime):
+                        as_run[key] = str(value)
+                    if isinstance(value, list):
+                        for val in value:
+                            if isinstance(val, dict):
+                                for k1, v1 in val.items():
+                                    if isinstance(v1, datetime.datetime):
+                                        val[k1] = str(v1)
 
-            action_result.add_data(res)
+        try:
+            del res['ResponseMetadata']
+        except:
+            pass
+
+        action_result.add_data(res)
 
         summary = action_result.update_summary({})
         summary['total_assessment_run_arn'] = action_result.get_data_size()
@@ -411,15 +418,6 @@ class AwsInspectorConnector(BaseConnector):
             assessment_run_arns = [assessment_run_arn.strip() for assessment_run_arn in assessment_run_arns.split(',')]
             assessment_run_arns = ' '.join(assessment_run_arns).split()
 
-        agent_ids = param.get('agent_ids')
-        if param.get('agent_ids'):
-            agent_ids = [agent_id.strip() for agent_id in agent_ids.split(',')]
-            agent_ids = ' '.join(agent_ids).split()
-            # if len(agent_ids) < 100:
-            filter.update({
-                'agentIds': agent_ids
-            })
-
         severities = param.get('severities')
         if param.get('severities'):
             severities = [severity.strip() for severity in severities.split(',')]
@@ -428,30 +426,24 @@ class AwsInspectorConnector(BaseConnector):
                 'severities': severities
             })
 
-        rules_package_arns = param.get('rules_package_arns')
-        if param.get('rule_package_arns'):
-            rules_package_arns = [rules_package_arn.strip() for rules_package_arn in rules_package_arns.split(',')]
-            rules_package_arns = ' '.join(rules_package_arns).split()
-            filter.update({
-                'rulesPackageArns': rules_package_arns
-            })
+        limit = param.get('limit', AWSINSPECTOR_MAX_PER_PAGE_LIMIT)
+
+        if (limit and not str(limit).isdigit()) or limit == 0:
+            return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
 
         kwargs = {}
         if param.get('assessment_run_arns'):
             kwargs['assessmentRunArns'] = assessment_run_arns
         kwargs['filter'] = filter
+        kwargs['maxResults'] = limit
 
         list_findings = self._paginator('list_findings', action_result, **kwargs)
-
-        self.debug_print("check type")
-        self.debug_print("Type:-", list_findings)
-        self.debug_print("End check type")
 
         if list_findings is None:
            return action_result.get_status()
 
-        for finding in list_findings:
-            ret_val, res = self._make_boto_call(action_result, 'describe_findings', findingArns=[finding])
+        while list_findings:
+            ret_val, res = self._make_boto_call(action_result, 'describe_findings', findingArns=list_findings[:min(10, len(list_findings))])
             findings = res.get('findings')
             if findings:
                 for finding in findings:
@@ -468,6 +460,7 @@ class AwsInspectorConnector(BaseConnector):
                 pass
 
             action_result.add_data(res)
+            del list_findings[:min(10, len(list_findings))]
 
         summary = action_result.update_summary({})
         summary['total_findings'] = action_result.get_data_size()
@@ -526,6 +519,16 @@ class AwsInspectorConnector(BaseConnector):
 
         list_items = list()
         next_token = None
+        dic_map = {
+            'list_targets': 'assessmentTargetArns',
+            'list_templates': 'assessmentTemplateArns',
+            'get_findings': 'findingArns'
+        }
+
+        set_name = dic_map.get(self.get_action_identifier())
+        self.debug_print("Test--")
+        self.debug_print(set_name)
+        self.debug_print("Test--end")
 
         while True:
             if next_token:
@@ -539,17 +542,8 @@ class AwsInspectorConnector(BaseConnector):
             if phantom.is_fail(ret_val):
                 return None
 
-            if response.get('assessmentTargetArns'):
-                list_items.extend(response.get('assessmentTargetArns'))
-
-            if response.get('assessmentTemplateArns'):
-                list_items.extend(response.get('assessmentTemplateArns'))
-
-            if response.get('assessmentRunArn'):
-                list_items.append(response.get('assessmentRunArn'))
-
-            if response.get('findingArns'):
-                list_items.extend(response.get('findingArns'))
+            if response.get(set_name):
+                list_items.extend(response.get(set_name))
 
             limit = kwargs.get('maxResults')
             if limit and len(list_items) >= limit:
