@@ -71,91 +71,91 @@
     <!-- Main Div -->
 
     {% for result in results %} <!-- loop for each result -->
-    {% if not result.data %}
-    <h4 class="wf-h4-style">No data found</h4>
-    {% else %}
-        <div class="info">
-        <h4 class="wf-h4-style">Info</h4>
-        <table class="wf-table-vertical">
-            {% if result.param.limit %}
-            <tr>
-                <td>Limit</td>
-                <td>
-                    {{ result.param.limit }}
-                </td>
-            </tr>
-            {% endif %}
-            {% if result.param.target_arns %}
-            <tr>
-				<td>Target ARNs</td>
-                <td class="widget-td">
-					<span class="glyphicon glyphicon-dot"></span>&nbsp;
-					<a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector target arn'],
-						   'value': '{{ result.param.target_arns }}' }], 0, {{ container.id }}, null, false);">
-					{{ result.param.target_arns }}
-					&nbsp;
-					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-					</a>
-				</td>
-            </tr>
-            {% endif %}
-            {% if result.param.template_name %}
-            <tr>
-                <td>Template Name</td>
-                <td>
-                    {{ result.param.template_name }}
-                </td>
-            </tr>
-            {% endif %}
-        </table>
-        </div>
-		
-        <div class="data">
-        <h4 class="wf-h4-style">Data</h4>
-        <table class="phantom-table dataTable">
-            <thead>
-				<th class="widget-th">Target ARNs</th>
-				<th class="widget-th">Template Name</th>
-				<th class="widget-th">Template ARN</th>
-				<th class="widget-th">Rules Package ARNs</th>
-            </thead>
-			{% for template_data in result.data %}
-			<tr>
-			<td>
-				<a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector target arn'],
-				'value':'{{ template_data.assessmentTargetArn }}' }], 0,
-				{{ container.id }}, null, false);">
-					{{ template_data.assessmentTargetArn }}
-					&nbsp;
-					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-				</a>
-			</td>
-            <td>
-				{{ template_data.name }}
-			</td>
-			<td>
-            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector template arn'],
-				'value':'{{ template_data.arn }}' }], 0,
-				{{ container.id }}, null, false);">
-					{{ template_data.arn }}
-					&nbsp;
-					<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-				</a>
-            </td>
-			<td>
-				{% for rule in template_data.rulesPackageArns %}
-					<span class="glyphicon glyphicon-dot"></span>&nbsp;
-					{{ rule }}
-					&nbsp;
-					{% if not forloop.last %}<br/> 
-					{% endif %}
-				 {% endfor %}
-			</td>
-            </tr>
-			{% endfor %}
-        </table>
-        </div>
-	{% endif %}
+        {% if not result.data %}
+            <h4 class="wf-h4-style">No data found</h4>
+        {% else %}
+            <div class="info">
+                <h4 class="wf-h4-style">Info</h4>
+                <table class="wf-table-vertical">
+                    {% if result.param.limit %}
+                        <tr>
+                            <td>Limit</td>
+                            <td>
+                                {{ result.param.limit }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.target_arns %}
+                        <tr>
+                            <td>Target ARNs</td>
+                            <td class="widget-td">
+                                <span class="glyphicon glyphicon-dot"></span>&nbsp;
+                                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector target arn'],
+                                    'value': '{{ result.param.target_arns }}' }], 0, {{ container.id }}, null, false);">
+                                {{ result.param.target_arns }}
+                                &nbsp;
+                                <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if result.param.template_name %}
+                        <tr>
+                            <td>Template Name</td>
+                            <td>
+                                {{ result.param.template_name }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                </table>
+            </div>
+            
+            <div class="data">
+                <h4 class="wf-h4-style">Data</h4>
+                <table class="phantom-table dataTable">
+                    <thead>
+                        <th class="widget-th">Target ARNs</th>
+                        <th class="widget-th">Template Name</th>
+                        <th class="widget-th">Template ARN</th>
+                        <th class="widget-th">Rules Package ARNs</th>
+                    </thead>
+                    {% for template_data in result.data %}
+                        <tr>
+                            <td>
+                                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector target arn'],
+                                'value':'{{ template_data.assessmentTargetArn }}' }], 0,
+                                {{ container.id }}, null, false);">
+                                    {{ template_data.assessmentTargetArn }}
+                                    &nbsp;
+                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                </a>
+                            </td>
+                            <td>
+                                {{ template_data.name }}
+                            </td>
+                            <td>
+                            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector template arn'],
+                                'value':'{{ template_data.arn }}' }], 0,
+                                {{ container.id }}, null, false);">
+                                    {{ template_data.arn }}
+                                    &nbsp;
+                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                                </a>
+                            </td>
+                            <td>
+                                {% for rule in template_data.rulesPackageArns %}
+                                    <span class="glyphicon glyphicon-dot"></span>&nbsp;
+                                    {{ rule }}
+                                    &nbsp;
+                                    {% if not forloop.last %}<br/> 
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
     {% endfor %}
 </div>
 <script>

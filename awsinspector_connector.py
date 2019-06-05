@@ -330,7 +330,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['total_target_arn'] = action_result.get_data_size()
 
-        return action_result.set_status(phantom.APP_SUCCESS, "Target is added successfully")
+        return action_result.set_status(phantom.APP_SUCCESS, "Target successfully added")
 
     def _handle_run_assessment(self, param):
         """ This function is used to start the assessment run specified by the ARN of the assessment template.

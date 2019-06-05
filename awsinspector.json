@@ -64,6 +64,7 @@
             "value_list": [
                 "us-east-1",
                 "us-east-2",
+                "us-west-1",
                 "us-west-2",
                 "ap-south-1",
                 "ap-northeast-1",
@@ -172,7 +173,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Target is added successfully"
+                        "Target successfully added"
                     ]
                 },
                 {
@@ -429,7 +430,7 @@
             "action": "list targets",
             "identifier": "list_targets",
             "description": "List the assessment target ARNs within the AWS account",
-            "verbose": "In the parameter Target Name, the user can specify an explicit value or a string that contains a wildcard to match the value of the assessment target name",
+            "verbose": "In the parameter target_name, the user can specify an explicit value or a string that contains a wildcard to match the value of the assessment target name",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -762,7 +763,7 @@
                     "order": 0
                 },
                 "severities": {
-                    "description": "Comma separated list of severity values (case-sensitive)(Max Limit: 50)",
+                    "description": "Comma separated list of severity values (case-sensitive) (Max Limit: 50)",
                     "data_type": "string",
                     "required": false,
                     "primary": false,
