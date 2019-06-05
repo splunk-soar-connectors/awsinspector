@@ -175,7 +175,7 @@ class AwsInspectorConnector(BaseConnector):
             return action_result.get_status()
 
         target_name = param.get('target_name')
-        limit = param.get('limit', AWSINSPECTOR_MAX_PER_PAGE_LIMIT)
+        limit = param.get('limit')
 
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
@@ -186,9 +186,8 @@ class AwsInspectorConnector(BaseConnector):
 
         kwargs = {}
         kwargs['filter'] = filter
-        kwargs['maxResults'] = limit
 
-        list_targets = self._paginator('list_assessment_targets', action_result, **kwargs)
+        list_targets = self._paginator('list_assessment_targets', limit, action_result, **kwargs)
 
         if list_targets is None:
            return action_result.get_status()
@@ -206,22 +205,22 @@ class AwsInspectorConnector(BaseConnector):
         for target in list_targets:
             ret_val, res = self._make_boto_call(action_result, 'describe_assessment_targets', assessmentTargetArns=[target])
 
-            assessment_targets = res.get('assessmentTargets')
-            if assessment_targets:
-                for target in assessment_targets:
-                    for key, value in target.items():
-                        if isinstance(value, datetime.datetime):
-                            target[key] = str(value)
-
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
 
-            try:
-                del res['ResponseMetadata']
-            except:
-                pass
+            if res.get('assessmentTargets'):
+                assessment_target = res.get('assessmentTargets')[0]
+            else:
+                failure_code = res.get('failedItems', {}).get(target, {}).get('failureCode')
+                error_message = failure_code if failure_code else 'Unknown error'
+                return action_result.set_status(
+                                phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment target: {0}. Error: {1}'.format(target, error_message))
 
-            action_result.add_data(res)
+            for key, value in assessment_target.items():
+                if isinstance(value, datetime.datetime):
+                    assessment_target[key] = str(value)
+
+            action_result.add_data(assessment_target)
 
         summary = action_result.update_summary({})
         summary['total_targets'] = action_result.get_data_size()
@@ -248,44 +247,45 @@ class AwsInspectorConnector(BaseConnector):
             target_arns = ' '.join(target_arns).split()
 
         template_name = param.get('template_name')
-        limit = param.get('limit', AWSINSPECTOR_MAX_PER_PAGE_LIMIT)
+        limit = param.get('limit')
 
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
 
         filter = {}
+        kwargs = {}
+
+        if target_arns:
+            kwargs['assessmentTargetArns'] = target_arns
+
         if template_name:
             filter['namePattern'] = template_name
-
-        kwargs = {}
-        if target_arns is not None:
-            kwargs['assessmentTargetArns'] = target_arns
         kwargs['filter'] = filter
-        kwargs['maxResults'] = limit
 
-        list_templates = self._paginator('list_assessment_templates', action_result, **kwargs)
+        list_templates = self._paginator('list_assessment_templates', limit, action_result, **kwargs)
 
         if list_templates is None:
            return action_result.get_status()
 
         for template in list_templates:
             ret_val, res = self._make_boto_call(action_result, 'describe_assessment_templates', assessmentTemplateArns=[template])
-            assessment_templates = res.get('assessmentTemplates')
-            if assessment_templates:
-                for template in assessment_templates:
-                    for key, value in template.items():
-                        if isinstance(value, datetime.datetime):
-                            template[key] = str(value)
+
+            if res.get('assessmentTemplates'):
+                assessment_template = res.get('assessmentTemplates')[0]
+            else:
+                failure_code = res.get('failedItems', {}).get(template, {}).get('failureCode')
+                error_message = failure_code if failure_code else 'Unknown error'
+                return action_result.set_status(
+                                phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment template: {0}. Error: {1}'.format(template, error_message))
+
+            for key, value in assessment_template.items():
+                if isinstance(value, datetime.datetime):
+                    assessment_template[key] = str(value)
 
             if phantom.is_fail(ret_val):
                 return action_result.get_status()
 
-            try:
-                del res['ResponseMetadata']
-            except:
-                pass
-
-            action_result.add_data(res)
+            action_result.add_data(assessment_template)
 
         summary = action_result.update_summary({})
         summary['total_templates'] = action_result.get_data_size()
@@ -355,14 +355,13 @@ class AwsInspectorConnector(BaseConnector):
         if param.get('assessment_run_name'):
             kwargs['assessmentRunName'] = assessment_run_name
 
-        # assessment_run_arns = self._paginator('start_assessment_run', action_result, **kwargs)
         ret, assessment_run = self._make_boto_call(action_result, 'start_assessment_run', **kwargs)
         if phantom.is_fail(ret):
             return action_result.get_status()
 
         assessment_run_arn = assessment_run.get('assessmentRunArn')
 
-        if assessment_run_arn is None:
+        if not assessment_run_arn:
            return action_result.get_status()
 
         # for arn in assessment_run_arns:
@@ -371,28 +370,33 @@ class AwsInspectorConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return action_result.get_status()
 
-        assessmentRuns = res.get('assessmentRuns')
-        if assessmentRuns:
-            for as_run in assessmentRuns:
-                for key, value in as_run.items():
-                    if isinstance(value, datetime.datetime):
-                        as_run[key] = str(value)
-                    if isinstance(value, list):
-                        for val in value:
-                            if isinstance(val, dict):
-                                for k1, v1 in val.items():
-                                    if isinstance(v1, datetime.datetime):
-                                        val[k1] = str(v1)
+        if res.get('assessmentRuns'):
+            assessment_run = res.get('assessmentRuns')[0]
+        else:
+            failure_code = res.get('failedItems', {}).get(assessment_run_arn, {}).get('failureCode')
+            error_message = failure_code if failure_code else 'Unknown error'
+            return action_result.set_status(
+                            phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment run: {0}. Error: {1}'.format(assessment_run_arn, error_message))
+
+        for key, value in assessment_run.items():
+            if isinstance(value, datetime.datetime):
+                assessment_run[key] = str(value)
+            if isinstance(value, list):
+                for val in value:
+                    if isinstance(val, dict):
+                        for k1, v1 in val.items():
+                            if isinstance(v1, datetime.datetime):
+                                val[k1] = str(v1)
 
         try:
             del res['ResponseMetadata']
         except:
             pass
 
-        action_result.add_data(res)
+        action_result.add_data(assessment_run)
 
         summary = action_result.update_summary({})
-        summary['total_assessment_run_arn'] = action_result.get_data_size()
+        summary['assessment_run_arn'] = assessment_run_arn
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -426,7 +430,7 @@ class AwsInspectorConnector(BaseConnector):
                 'severities': severities
             })
 
-        limit = param.get('limit', AWSINSPECTOR_MAX_PER_PAGE_LIMIT)
+        limit = param.get('limit')
 
         if (limit and not str(limit).isdigit()) or limit == 0:
             return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
@@ -435,29 +439,27 @@ class AwsInspectorConnector(BaseConnector):
         if param.get('assessment_run_arns'):
             kwargs['assessmentRunArns'] = assessment_run_arns
         kwargs['filter'] = filter
-        kwargs['maxResults'] = limit
 
-        list_findings = self._paginator('list_findings', action_result, **kwargs)
+        list_findings = self._paginator('list_findings', limit, action_result, **kwargs)
 
         if list_findings is None:
            return action_result.get_status()
 
         while list_findings:
             ret_val, res = self._make_boto_call(action_result, 'describe_findings', findingArns=list_findings[:min(10, len(list_findings))])
+
+            if phantom.is_fail(ret_val):
+                return action_result.get_status()
+
             findings = res.get('findings')
             if findings:
                 for finding in findings:
                     for key, value in finding.items():
                         if isinstance(value, datetime.datetime):
                             finding[key] = str(value)
-
-            if phantom.is_fail(ret_val):
-                return action_result.get_status()
-
-            try:
-                del res['ResponseMetadata']
-            except:
-                pass
+            else:
+                return action_result.set_status(
+                                phantom.APP_ERROR, 'Error occurred while fetching the details of the findings: {0}'.format(str(list_findings[:min(10, len(list_findings))])))
 
             for finding_detail in findings:
                 action_result.add_data(finding_detail)
@@ -483,17 +485,12 @@ class AwsInspectorConnector(BaseConnector):
         if phantom.is_fail(self._create_client(action_result)):
             return action_result.get_status()
 
-        list_targets = self._paginator('list_assessment_targets', action_result)
-
         target_arn = param['target_arn']
 
         kwargs = {}
         kwargs['assessmentTargetArn'] = target_arn
 
-        if target_arn in list_targets:
-            ret_val, response = self._make_boto_call(action_result, 'delete_assessment_target', **kwargs)
-        else:
-            return action_result.set_status(phantom.APP_ERROR, "Requested target arn does not exist")
+        ret_val, response = self._make_boto_call(action_result, 'delete_assessment_target', **kwargs)
 
         if phantom.is_fail(ret_val):
             return action_result.get_status()
@@ -505,12 +502,9 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result.add_data(response)
 
-        summary = action_result.update_summary({})
-        summary['total_target_arn'] = action_result.get_data_size()
+        return action_result.set_status(phantom.APP_SUCCESS, "Target is deleted successfully")
 
-        return action_result.set_status(phantom.APP_SUCCESS, "Target is removed successfully")
-
-    def _paginator(self, method_name, action_result, **kwargs):
+    def _paginator(self, method_name, limit, action_result, **kwargs):
         """
         This action is used to create an iterator that will paginate through responses from called methods.
 
@@ -524,7 +518,8 @@ class AwsInspectorConnector(BaseConnector):
         dic_map = {
             'list_targets': 'assessmentTargetArns',
             'list_templates': 'assessmentTemplateArns',
-            'get_findings': 'findingArns'
+            'get_findings': 'findingArns',
+            'delete_target': 'assessmentTargetArns'
         }
 
         set_name = dic_map.get(self.get_action_identifier())
@@ -534,9 +529,10 @@ class AwsInspectorConnector(BaseConnector):
                 ret_val, response = self._make_boto_call(action_result,
                                                         method_name,
                                                         nextToken=next_token,
+                                                        maxResults=AWSINSPECTOR_MAX_PER_PAGE_LIMIT,
                                                         **kwargs)
             else:
-                ret_val, response = self._make_boto_call(action_result, method_name, **kwargs)
+                ret_val, response = self._make_boto_call(action_result, method_name, maxResults=AWSINSPECTOR_MAX_PER_PAGE_LIMIT, **kwargs)
 
             if phantom.is_fail(ret_val):
                 return None
@@ -544,7 +540,6 @@ class AwsInspectorConnector(BaseConnector):
             if response.get(set_name):
                 list_items.extend(response.get(set_name))
 
-            limit = kwargs.get('maxResults')
             if limit and len(list_items) >= limit:
                 return list_items[:limit]
 
