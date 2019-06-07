@@ -203,6 +203,7 @@
             "action": "delete target",
             "identifier": "delete_target",
             "description": "Delete the assessment target",
+            "verbose": "Deleting an assessment target will also delete corresponding templates, runs, and findings",
             "type": "generic",
             "read_only": false,
             "parameters": {
