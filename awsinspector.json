@@ -1,7 +1,7 @@
 {
     "appid": "260fc783-af81-433e-95fc-d33664422d6a",
     "name": "AWS Inspector",
-    "description": "This app integrates with AWS Inspector to perform various investigative actions",
+    "description": "This app integrates with AWS Inspector to perform security assessment actions",
     "type": "devops",
     "product_vendor": "AWS",
     "logo": "logo_awsinspector.svg",
@@ -112,7 +112,8 @@
                     "required": false,
                     "primary": true,
                     "contains": [
-                        "aws inspector resource group arn"
+                        "aws inspector resource group arn",
+                        "aws arn"
                     ],
                     "order": 1
                 }
@@ -130,7 +131,8 @@
                     "data_path": "action_result.parameter.resource_group_arn",
                     "data_type": "string",
                     "contains": [
-                        "aws inspector resource group arn"
+                        "aws inspector resource group arn",
+                        "aws arn"
                     ],
                     "column_name": "Resource Group ARN",
                     "column_order": 2,
@@ -156,7 +158,8 @@
                     "column_name": "Target ARN",
                     "column_order": 1,
                     "contains": [
-                        "aws inspector target arn"
+                        "aws inspector target arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K"
@@ -209,7 +212,8 @@
                     "required": true,
                     "primary": true,
                     "contains": [
-                        "aws inspector target arn"
+                        "aws inspector target arn",
+                        "aws arn"
                     ],
                     "order": 0
                 }
@@ -231,7 +235,8 @@
                     "column_name": "Target ARN",
                     "column_order": 0,
                     "contains": [
-                        "aws inspector target arn"
+                        "aws inspector target arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-KstwgEAp"
@@ -276,7 +281,7 @@
             "action": "list templates",
             "identifier": "list_templates",
             "description": "List the assessment templates of assessment targets",
-            "verbose": "In the parameter Template Name, the user can specify an explicit value or a string that contains a wildcard to match the value of the assessment template name",
+            "verbose": "In the parameter <b>template_name</b>, the user can specify an explicit value or a string that contains a wildcard to match the value of the assessment template name",
             "type": "investigate",
             "read_only": true,
             "parameters": {
@@ -286,7 +291,8 @@
                     "required": false,
                     "primary": true,
                     "contains": [
-                        "aws inspector target arn"
+                        "aws inspector target arn",
+                        "aws arn"
                     ],
                     "order": 0
                 },
@@ -325,7 +331,8 @@
                     "data_path": "action_result.parameter.target_arns",
                     "data_type": "string",
                     "contains": [
-                        "aws inspector target arn"
+                        "aws inspector target arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-6oqI2Cov"
@@ -356,7 +363,8 @@
                     "data_path": "action_result.data.*.assessmentTargetArn",
                     "data_type": "string",
                     "contains": [
-                        "aws inspector target arn"
+                        "aws inspector target arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-6oqI2Cov"
@@ -482,7 +490,8 @@
                     "data_path": "action_result.data.*.arn",
                     "data_type": "string",
                     "contains": [
-                        "aws inspector target arn"
+                        "aws inspector target arn",
+                        "aws arn"
                     ],
                     "column_name": "Target ARN",
                     "column_order": 2,
@@ -557,7 +566,7 @@
             "action": "run assessment",
             "identifier": "run_assessment",
             "description": "Start the assessment run specified by the assessment template ARN",
-            "verbose": "While an assessment run is in the COLLECTING_DATA state then, at the same time assessment runs of the other assessment templates will get failed",
+            "verbose": "While an assessment run is in the COLLECTING_DATA state then, all other assessment runs will fail.",
             "type": "generic",
             "read_only": true,
             "parameters": {
@@ -567,7 +576,8 @@
                     "required": true,
                     "primary": true,
                     "contains": [
-                        "aws inspector template arn"
+                        "aws inspector template arn",
+                        "aws arn"
                     ],
                     "order": 0
                 },
@@ -603,7 +613,8 @@
                     "column_name": "Template ARN",
                     "column_order": 0,
                     "contains": [
-                        "aws inspector template arn"
+                        "aws inspector template arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI"
@@ -613,7 +624,8 @@
                     "data_path": "action_result.data.*.arn",
                     "data_type": "string",
                     "contains": [
-                        "aws inspector assessment run arn"
+                        "aws inspector assessment run arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-D2egFbHs"
@@ -625,7 +637,8 @@
                     "data_path": "action_result.data.*.assessmentTemplateArn",
                     "data_type": "string",
                     "contains": [
-                        "aws inspector template arn"
+                        "aws inspector template arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI"
@@ -710,7 +723,8 @@
                     "data_path": "action_result.summary.assessment_run_arn",
                     "data_type": "numeric",
                     "contains": [
-                        "aws inspector assessment run arn"
+                        "aws inspector assessment run arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-D2egFbHs"
@@ -758,7 +772,8 @@
                     "required": false,
                     "primary": true,
                     "contains": [
-                        "aws inspector assessment run arn"
+                        "aws inspector assessment run arn",
+                        "aws arn"
                     ],
                     "order": 0
                 },
@@ -790,7 +805,8 @@
                     "data_path": "action_result.parameter.assessment_run_arns",
                     "data_type": "string",
                     "contains": [
-                        "aws inspector assessment run arn"
+                        "aws inspector assessment run arn",
+                        "aws arn"
                     ],
                     "example_values": [
                         "arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-weJjg0hC/run/0-ZjmO3RKu"

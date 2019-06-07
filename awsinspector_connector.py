@@ -194,13 +194,6 @@ class AwsInspectorConnector(BaseConnector):
 
         tz = tzlocal()
         self.debug_print(tz)
-        self.debug_print("The response of the action when added to the action_result")
-        self.debug_print("It generates an error that the response data can not be serialized due to datetime object present in the output response")
-        self.debug_print("To resolve that, we are trying to convert the datetime object into a corresponding datetime string")
-        self.debug_print("List targets action's output response contains the datetime object consisting of a tzinfo attribute with the local timezone information")
-        self.debug_print("If we try converting the datetime object in output response directly, we get the error that tzlocal module not found")
-        self.debug_print("To avoid that error we have imported the tzlocal module")
-        self.debug_print("To avoid the error of module is imported but never used, we have created an object of tzlocal and printed it's value in debug_print")
 
         for target in list_targets:
             ret_val, res = self._make_boto_call(action_result, 'describe_assessment_targets', assessmentTargetArns=[target])
