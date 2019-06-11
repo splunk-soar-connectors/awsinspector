@@ -291,6 +291,7 @@
                     "data_type": "string",
                     "required": false,
                     "primary": true,
+                    "allow_list": true,
                     "contains": [
                         "aws inspector target arn",
                         "aws arn"
@@ -772,6 +773,7 @@
                     "data_type": "string",
                     "required": false,
                     "primary": true,
+                    "allow_list": true,
                     "contains": [
                         "aws inspector assessment run arn",
                         "aws arn"
@@ -783,6 +785,7 @@
                     "data_type": "string",
                     "required": false,
                     "primary": false,
+                    "allow_list": true,
                     "order": 1
                 },
                 "limit": {
