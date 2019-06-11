@@ -57,12 +57,12 @@ class AwsInspectorConnector(BaseConnector):
 
         config = self.get_config()
 
-        self._region = config['region']
-
         if 'access_key' in config:
             self._access_key = config['access_key']
         if 'secret_key' in config:
             self._secret_key = config['secret_key']
+
+        self._region = AWSINSPECTOR_REGION_DICT.get(config[AWSGUARDDUTY_JSON_REGION])
 
         self._proxy = {}
         env_vars = config.get('_reserved_environment_variables', {})
