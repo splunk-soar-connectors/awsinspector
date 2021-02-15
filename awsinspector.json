@@ -15,7 +15,9 @@
     "package_name": "phantom_awsinspector",
     "main_module": "awsinspector_connector.py",
     "min_phantom_version": "4.9.39220",
-    "latest_tested_versions": [],
+    "latest_tested_versions": [
+        "Cloud tested on 11-24-2020"
+    ],
     "python_version": "3",
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {
@@ -36,7 +38,6 @@
                 "module": "docutils",
                 "input_file": "wheels/docutils-0.16-py2.py3-none-any.whl"
             },
-
             {
                 "module": "jmespath",
                 "input_file": "wheels/jmespath-0.9.3-py2.py3-none-any.whl"
@@ -108,7 +109,6 @@
                 "resource_group_arn": {
                     "description": "Resource Group ARN used for creating the assessment target",
                     "data_type": "string",
-                    "required": false,
                     "primary": true,
                     "contains": [
                         "aws inspector resource group arn",
@@ -202,7 +202,7 @@
             "action": "delete target",
             "identifier": "delete_target",
             "description": "Delete the assessment target",
-            "verbose": "Deleting an assessment target will also delete corresponding templates, runs, and findings",
+            "verbose": "Deleting an assessment target will also delete corresponding templates, runs, and findings.",
             "type": "generic",
             "read_only": false,
             "parameters": {
@@ -281,14 +281,13 @@
             "action": "list templates",
             "identifier": "list_templates",
             "description": "List the assessment templates of assessment targets",
-            "verbose": "In the parameter <b>template_name</b>, the user can specify an explicit value or a string that contains a wildcard to match the value of the assessment template name",
+            "verbose": "In the parameter <b>template_name</b>, the user can specify an explicit value or a string that contains a wildcard to match the value of the assessment template name.",
             "type": "investigate",
             "read_only": true,
             "parameters": {
                 "target_arns": {
                     "description": "Comma separated list of target ARNs",
                     "data_type": "string",
-                    "required": false,
                     "primary": true,
                     "allow_list": true,
                     "contains": [
@@ -300,15 +299,11 @@
                 "template_name": {
                     "description": "Assessment template name pattern",
                     "data_type": "string",
-                    "required": false,
-                    "primary": false,
                     "order": 1
                 },
                 "limit": {
                     "description": "Maximum number of templates to be fetched",
                     "data_type": "numeric",
-                    "required": false,
-                    "primary": false,
                     "order": 2
                 }
             },
@@ -439,14 +434,13 @@
             "action": "list targets",
             "identifier": "list_targets",
             "description": "List the assessment target ARNs within the AWS account",
-            "verbose": "In the parameter target_name, the user can specify an explicit value or a string that contains a wildcard to match the value of the assessment target name",
+            "verbose": "In the parameter target_name, the user can specify an explicit value or a string that contains a wildcard to match the value of the assessment target name.",
             "type": "investigate",
             "read_only": true,
             "parameters": {
                 "target_name": {
                     "description": "Assessment target name pattern",
                     "data_type": "string",
-                    "required": false,
                     "primary": true,
                     "contains": [
                         "aws inspector target name"
@@ -585,8 +579,6 @@
                 "assessment_run_name": {
                     "description": "Name of the assessment run",
                     "data_type": "string",
-                    "required": false,
-                    "primary": false,
                     "order": 1
                 }
             },
@@ -770,7 +762,6 @@
                 "assessment_run_arns": {
                     "description": "Comma separated list of the assessment runs ARNs (Max Limit: 50)",
                     "data_type": "string",
-                    "required": false,
                     "primary": true,
                     "allow_list": true,
                     "contains": [
@@ -782,16 +773,12 @@
                 "severities": {
                     "description": "Comma separated list of severity values (case-sensitive) (Max Limit: 50)",
                     "data_type": "string",
-                    "required": false,
-                    "primary": false,
                     "allow_list": true,
                     "order": 1
                 },
                 "limit": {
                     "description": "Maximum number of findings to be fetched",
                     "data_type": "numeric",
-                    "required": false,
-                    "primary": false,
                     "order": 2
                 }
             },
