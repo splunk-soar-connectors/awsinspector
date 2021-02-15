@@ -10,11 +10,13 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2019 Splunk Inc.",
-    "app_version": "1.0.1",
+    "app_version": "2.0.0",
     "utctime_updated": "2019-06-12T02:13:02.000000Z",
     "package_name": "phantom_awsinspector",
-    "main_module": "awsinspector_connector.pyc",
-    "min_phantom_version": "4.2.7532",
+    "main_module": "awsinspector_connector.py",
+    "min_phantom_version": "4.9.39220",
+    "latest_tested_versions": [],
+    "python_version": "3",
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {
         "wheel": [
@@ -31,13 +33,10 @@
                 "input_file": "wheels/s3transfer-0.2.0-py2.py3-none-any.whl"
             },
             {
-                "module": "futures",
-                "input_file": "wheels/futures-3.2.0-py2-none-any.whl"
-            },
-            {
                 "module": "docutils",
-                "input_file": "wheels/docutils-0.14-py2-none-any.whl"
+                "input_file": "wheels/docutils-0.16-py2.py3-none-any.whl"
             },
+
             {
                 "module": "jmespath",
                 "input_file": "wheels/jmespath-0.9.3-py2.py3-none-any.whl"
