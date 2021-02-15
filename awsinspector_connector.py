@@ -209,7 +209,7 @@ class AwsInspectorConnector(BaseConnector):
                 return action_result.set_status(
                                 phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment target: {0}. Error: {1}'.format(target, error_message))
 
-            for key, value in assessment_target.items():
+            for key, value in list(assessment_target.items()):
                 if isinstance(value, datetime.datetime):
                     assessment_target[key] = str(value)
 
@@ -271,7 +271,7 @@ class AwsInspectorConnector(BaseConnector):
                 return action_result.set_status(
                                 phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment template: {0}. Error: {1}'.format(template, error_message))
 
-            for key, value in assessment_template.items():
+            for key, value in list(assessment_template.items()):
                 if isinstance(value, datetime.datetime):
                     assessment_template[key] = str(value)
 
@@ -371,7 +371,7 @@ class AwsInspectorConnector(BaseConnector):
             return action_result.set_status(
                             phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment run: {0}. Error: {1}'.format(assessment_run_arn, error_message))
 
-        for key, value in assessment_run.items():
+        for key, value in list(assessment_run.items()):
             if isinstance(value, datetime.datetime):
                 assessment_run[key] = str(value)
             if isinstance(value, list):
@@ -447,7 +447,7 @@ class AwsInspectorConnector(BaseConnector):
             findings = res.get('findings')
             if findings:
                 for finding in findings:
-                    for key, value in finding.items():
+                    for key, value in list(finding.items()):
                         if isinstance(value, datetime.datetime):
                             finding[key] = str(value)
             else:
@@ -563,7 +563,7 @@ class AwsInspectorConnector(BaseConnector):
         action = self.get_action_identifier()
         action_execution_status = phantom.APP_SUCCESS
 
-        if action in action_mapping.keys():
+        if action in list(action_mapping.keys()):
             action_function = action_mapping[action]
             action_execution_status = action_function(param)
 
