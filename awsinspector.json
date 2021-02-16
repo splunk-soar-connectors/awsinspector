@@ -16,7 +16,7 @@
     "main_module": "awsinspector_connector.py",
     "min_phantom_version": "4.9.39220",
     "latest_tested_versions": [
-        "Cloud tested on 11-24-2020"
+        "Cloud tested on 02-16-2021"
     ],
     "python_version": "3",
     "app_wizard_version": "1.0.0",
