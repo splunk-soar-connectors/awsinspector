@@ -450,8 +450,6 @@
                 "limit": {
                     "description": "Maximum number of targets to be fetched",
                     "data_type": "numeric",
-                    "required": false,
-                    "primary": false,
                     "order": 1
                 }
             },
