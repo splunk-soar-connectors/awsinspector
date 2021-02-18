@@ -11,7 +11,7 @@
     "publisher": "Splunk",
     "license": "Copyright (c) 2019-2021 Splunk Inc.",
     "app_version": "2.0.0",
-    "utctime_updated": "2019-06-12T02:13:02.000000Z",
+    "utctime_updated": "2021-02-15T08:03:02.000000Z",
     "package_name": "phantom_awsinspector",
     "main_module": "awsinspector_connector.py",
     "min_phantom_version": "4.9.39220",
