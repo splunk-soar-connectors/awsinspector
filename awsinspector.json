@@ -286,7 +286,7 @@
             "read_only": true,
             "parameters": {
                 "target_arns": {
-                    "description": "Comma separated list of target ARNs",
+                    "description": "List of target ARNs",
                     "data_type": "string",
                     "primary": true,
                     "allow_list": true,
@@ -561,7 +561,7 @@
             "description": "Start the assessment run specified by the assessment template ARN",
             "verbose": "While an assessment run is in the COLLECTING_DATA state then, all other assessment runs will fail.",
             "type": "generic",
-            "read_only": true,
+            "read_only": false,
             "parameters": {
                 "template_arn": {
                     "description": "Assessment template ARN to start the assessment run of",
@@ -758,7 +758,7 @@
             "read_only": true,
             "parameters": {
                 "assessment_run_arns": {
-                    "description": "Comma separated list of the assessment runs ARNs (Max Limit: 50)",
+                    "description": "List of the assessment runs ARNs (Max Limit: 50)",
                     "data_type": "string",
                     "primary": true,
                     "allow_list": true,
@@ -769,7 +769,7 @@
                     "order": 0
                 },
                 "severities": {
-                    "description": "Comma separated list of severity values (case-sensitive) (Max Limit: 50)",
+                    "description": "List of severity values (case-sensitive) (Max Limit: 50)",
                     "data_type": "string",
                     "allow_list": true,
                     "order": 1
