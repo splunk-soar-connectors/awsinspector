@@ -10,8 +10,8 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2019-2021 Splunk Inc.",
-    "app_version": "2.0.3",
-    "utctime_updated": "2021-02-22T22:37:08.000000Z",
+    "app_version": "2.1.0",
+    "utctime_updated": "2021-05-25T19:29:56.000000Z",
     "package_name": "phantom_awsinspector",
     "main_module": "awsinspector_connector.py",
     "min_phantom_version": "4.9.39220",
@@ -24,11 +24,11 @@
         "wheel": [
             {
                 "module": "boto3",
-                "input_file": "wheels/boto3-1.10.31-py2.py3-none-any.whl"
+                "input_file": "wheels/boto3-1.17.30-py2.py3-none-any.whl"
             },
             {
                 "module": "botocore",
-                "input_file": "wheels/botocore-1.13.31-py2.py3-none-any.whl"
+                "input_file": "wheels/botocore-1.20.30-py2.py3-none-any.whl"
             },
             {
                 "module": "s3transfer",
