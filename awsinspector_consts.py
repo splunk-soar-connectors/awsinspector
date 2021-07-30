@@ -6,7 +6,7 @@
 # Define your constants here
 AWSINSPECTOR_INVALID_LIMIT = 'Please provide non-zero positive integer in limit'
 AWSINSPECTOR_MAX_PER_PAGE_LIMIT = 500
-AWSGUARDDUTY_JSON_REGION = "region"
+AWSINSPECTOR_JSON_REGION = "region"
 AWSINSPECTOR_REGION_DICT = {
         "US East (N. Virginia)": "us-east-1",
         "US East (Ohio)": "us-east-2",
@@ -21,3 +21,5 @@ AWSINSPECTOR_REGION_DICT = {
         "EU (Ireland)": "eu-west-1",
         "EU (London)": "eu-west-2",
     }
+AWSINSPECTOR_BAD_ASSET_CONFIG_MSG = 'Please provide access keys or select assume role check box in asset configuration'
+AWSINSPECTOR_ROLE_CREDENTIALS_FAILURE_MSG = 'Failed to retrieve EC2 role credentials from instance'

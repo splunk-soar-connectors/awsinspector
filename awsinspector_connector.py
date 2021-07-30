@@ -16,9 +16,10 @@ from awsinspector_consts import *
 import requests
 import json
 import datetime
-from boto3 import client
+from boto3 import client, Session
 from botocore.config import Config
 from dateutil.tz import tzlocal
+import ast
 
 
 class RetVal(tuple):
@@ -40,6 +41,7 @@ class AwsInspectorConnector(BaseConnector):
         self._region = None
         self._access_key = None
         self._secret_key = None
+        self._session_token = None
         self._proxy = None
 
         # Variable to hold a base_url in case the app makes REST calls
@@ -57,12 +59,7 @@ class AwsInspectorConnector(BaseConnector):
 
         config = self.get_config()
 
-        if 'access_key' in config:
-            self._access_key = config['access_key']
-        if 'secret_key' in config:
-            self._secret_key = config['secret_key']
-
-        self._region = AWSINSPECTOR_REGION_DICT.get(config[AWSGUARDDUTY_JSON_REGION])
+        self._region = AWSINSPECTOR_REGION_DICT.get(config[AWSINSPECTOR_JSON_REGION])
 
         self._proxy = {}
         env_vars = config.get('_reserved_environment_variables', {})
@@ -70,6 +67,22 @@ class AwsInspectorConnector(BaseConnector):
             self._proxy['http'] = env_vars['HTTP_PROXY']['value']
         if 'HTTPS_PROXY' in env_vars:
             self._proxy['https'] = env_vars['HTTPS_PROXY']['value']
+
+        if config.get('use_role'):
+            credentials = self._handle_get_ec2_role()
+            if not credentials:
+                return self.set_status(phantom.APP_ERROR, AWSINSPECTOR_ROLE_CREDENTIALS_FAILURE_MSG)
+            self._access_key = credentials.access_key
+            self._secret_key = credentials.secret_key
+            self._session_token = credentials.token
+
+            return phantom.APP_SUCCESS
+
+        self._access_key = config.get('access_key')
+        self._secret_key = config.get('secret_key')
+
+        if not (self._access_key and self._secret_key):
+            return self.set_status(phantom.APP_ERROR, AWSINSPECTOR_BAD_ASSET_CONFIG_MSG)
 
         return phantom.APP_SUCCESS
 
@@ -85,7 +98,13 @@ class AwsInspectorConnector(BaseConnector):
         self.save_state(self._state)
         return phantom.APP_SUCCESS
 
-    def _create_client(self, action_result):
+    def _handle_get_ec2_role(self):
+
+        session = Session(region_name=self._region)
+        credentials = session.get_credentials()
+        return credentials
+
+    def _create_client(self, action_result, param=None):
         """This function is used to create a client which is necessary for Boto call
 
         :param action_result: Object of ActionResult class
@@ -96,6 +115,19 @@ class AwsInspectorConnector(BaseConnector):
         if self._proxy:
             boto_config = Config(proxies=self._proxy)
 
+        # Try getting and using temporary assume role credentials from parameters
+        temp_credentials = dict()
+        if param and 'credentials' in param:
+            try:
+                temp_credentials = ast.literal_eval(param['credentials'])
+                self._access_key = temp_credentials.get('AccessKeyId', '')
+                self._secret_key = temp_credentials.get('SecretAccessKey', '')
+                self._session_token = temp_credentials.get('SessionToken', '')
+
+                self.save_progress("Using temporary assume role credentials for action")
+            except Exception as e:
+                return action_result.set_status(phantom.APP_ERROR, "Failed to get temporary credentials:{0}".format(e))
+
         try:
             if self._access_key and self._secret_key:
 
@@ -105,6 +137,7 @@ class AwsInspectorConnector(BaseConnector):
                         region_name=self._region,
                         aws_access_key_id=self._access_key,
                         aws_secret_access_key=self._secret_key,
+                        aws_session_token=self._session_token,
                         config=boto_config)
             else:
                 self.debug_print("Creating boto3 client without API keys")
@@ -148,7 +181,7 @@ class AwsInspectorConnector(BaseConnector):
 
         self.save_progress("Connecting to endpoint")
 
-        if phantom.is_fail(self._create_client(action_result)):
+        if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
 
         ret_val, response = self._make_boto_call(action_result, 'list_assessment_targets', maxResults=1)
@@ -171,7 +204,7 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if phantom.is_fail(self._create_client(action_result)):
+        if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
 
         target_name = param.get('target_name')
@@ -231,7 +264,7 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if phantom.is_fail(self._create_client(action_result)):
+        if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
 
         target_arns = param.get('target_arns')
@@ -296,7 +329,7 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if phantom.is_fail(self._create_client(action_result)):
+        if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
 
         target_name = param['target_name']
@@ -336,7 +369,7 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if phantom.is_fail(self._create_client(action_result)):
+        if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
 
         template_arn = param['template_arn']
@@ -404,7 +437,7 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if phantom.is_fail(self._create_client(action_result)):
+        if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
 
         filter = {}
@@ -475,7 +508,7 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
-        if phantom.is_fail(self._create_client(action_result)):
+        if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
 
         target_arn = param['target_arn']
