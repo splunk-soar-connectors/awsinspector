@@ -10,7 +10,7 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2019-2021 Splunk Inc.",
-    "app_version": "2.2.2",
+    "app_version": "2.2.4",
     "utctime_updated": "2021-08-26T20:53:40.000000Z",
     "package_name": "phantom_awsinspector",
     "main_module": "awsinspector_connector.py",
