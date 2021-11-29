@@ -14,7 +14,7 @@
     "utctime_updated": "2021-08-27T00:20:37.000000Z",
     "package_name": "phantom_awsinspector",
     "main_module": "awsinspector_connector.py",
-    "min_phantom_version": "4.9.39220",
+    "min_phantom_version": "5.0.0",
     "latest_tested_versions": [
         "Cloud tested on July 29th, 2021"
     ],
