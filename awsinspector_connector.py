@@ -28,7 +28,7 @@ from boto3 import client, Session
 from botocore.config import Config
 from dateutil.tz import tzlocal
 import ast
-
+import sys
 
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
@@ -247,8 +247,8 @@ class AwsInspectorConnector(BaseConnector):
             else:
                 failure_code = res.get('failedItems', {}).get(target, {}).get('failureCode')
                 error_message = failure_code if failure_code else 'Unknown error'
-                return action_result.set_status(
-                                phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment target: {0}. Error: {1}'.format(target, error_message))
+                return action_result.set_status(phantom.APP_ERROR,
+                    'Error occurred while fetching the details of the assessment target: {0}. Error: {1}'.format(target, error_message))
 
             for key, value in list(assessment_target.items()):
                 if isinstance(value, datetime.datetime):
@@ -309,8 +309,8 @@ class AwsInspectorConnector(BaseConnector):
             else:
                 failure_code = res.get('failedItems', {}).get(template, {}).get('failureCode')
                 error_message = failure_code if failure_code else 'Unknown error'
-                return action_result.set_status(
-                                phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment template: {0}. Error: {1}'.format(template, error_message))
+                return action_result.set_status(phantom.APP_ERROR,
+                    'Error occurred while fetching the details of the assessment template: {0}. Error: {1}'.format(template, error_message))
 
             for key, value in list(assessment_template.items()):
                 if isinstance(value, datetime.datetime):
@@ -409,8 +409,8 @@ class AwsInspectorConnector(BaseConnector):
         else:
             failure_code = res.get('failedItems', {}).get(assessment_run_arn, {}).get('failureCode')
             error_message = failure_code if failure_code else 'Unknown error'
-            return action_result.set_status(
-                            phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment run: {0}. Error: {1}'.format(assessment_run_arn, error_message))
+            return action_result.set_status(phantom.APP_ERROR,
+                'Error occurred while fetching the details of the assessment run: {0}. Error: {1}'.format(assessment_run_arn, error_message))
 
         for key, value in list(assessment_run.items()):
             if isinstance(value, datetime.datetime):
@@ -492,8 +492,8 @@ class AwsInspectorConnector(BaseConnector):
                         if isinstance(value, datetime.datetime):
                             finding[key] = str(value)
             else:
-                return action_result.set_status(
-                                phantom.APP_ERROR, 'Error occurred while fetching the details of the findings: {0}'.format(str(list_findings[:min(10, len(list_findings))])))
+                return action_result.set_status(phantom.APP_ERROR,
+                    'Error occurred while fetching the details of the findings: {0}'.format(str(list_findings[:min(10, len(list_findings))])))
 
             for finding_detail in findings:
                 action_result.add_data(finding_detail)
@@ -657,7 +657,7 @@ if __name__ == '__main__':
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: {0}".format(str(e)))
-            exit(1)
+            sys.exit(1)
 
     with open(args.input_test_json) as f:
         in_json = f.read()
@@ -674,4 +674,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)
