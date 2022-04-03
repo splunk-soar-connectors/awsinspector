@@ -30,6 +30,7 @@ from dateutil.tz import tzlocal
 import ast
 import sys
 
+
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
@@ -324,6 +325,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['total_templates'] = action_result.get_data_size()
 
+        self.save_progress("Handle list templates succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_add_target(self, param):
@@ -364,6 +366,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['total_target_arn'] = action_result.get_data_size()
 
+        self.save_progress("Handle add target succeeded")
         return action_result.set_status(phantom.APP_SUCCESS, "Target successfully added")
 
     def _handle_run_assessment(self, param):
@@ -432,6 +435,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['assessment_run_arn'] = assessment_run_arn
 
+        self.save_progress("Handle run assessment succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_get_findings(self, param):
@@ -503,6 +507,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['total_findings'] = action_result.get_data_size()
 
+        self.save_progress("Handle get findings succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_delete_target(self, param):
@@ -536,6 +541,7 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result.add_data(response)
 
+        self.save_progress("Handle delete target succeeded")
         return action_result.set_status(phantom.APP_SUCCESS, "Target is deleted successfully")
 
     def _paginator(self, method_name, limit, action_result, **kwargs):
