@@ -15,20 +15,21 @@
 #
 #
 # Phantom App imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-from awsinspector_consts import *
+import ast
+import datetime
+import json
+import sys
 
+import phantom.app as phantom
 # Usage of the consts file is recommended
 import requests
-import json
-import datetime
-from boto3 import client, Session
+from boto3 import Session, client
 from botocore.config import Config
 from dateutil.tz import tzlocal
-import ast
-import sys
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+from awsinspector_consts import *
 
 
 class RetVal(tuple):
@@ -619,8 +620,9 @@ class AwsInspectorConnector(BaseConnector):
 
 if __name__ == '__main__':
 
-    import pudb
     import argparse
+
+    import pudb
 
     pudb.set_trace()
 
