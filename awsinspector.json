@@ -9,12 +9,12 @@
     "product_name": "Inspector",
     "product_version_regex": ".*",
     "publisher": "Splunk",
-    "license": "Copyright (c) 2019-2021 Splunk Inc.",
+    "license": "Copyright (c) 2019-2022 Splunk Inc.",
     "app_version": "2.2.10",
     "utctime_updated": "2022-01-07T21:56:46.000000Z",
     "package_name": "phantom_awsinspector",
     "main_module": "awsinspector_connector.py",
-    "min_phantom_version": "5.0.0",
+    "min_phantom_version": "5.2.0",
     "fips_compliant": true,
     "latest_tested_versions": [
         "Cloud tested on July 29th, 2021"
