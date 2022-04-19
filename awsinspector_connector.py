@@ -1,25 +1,35 @@
 # File: awsinspector_connector.py
-# Copyright (c) 2019-2021 Splunk Inc.
 #
-# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
-# without a valid written license from Splunk Inc. is PROHIBITED.
+# Copyright (c) 2019-2022 Splunk Inc.
 #
-
-
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+#
+#
 # Phantom App imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-from awsinspector_consts import *
+import ast
+import datetime
+import json
+import sys
 
+import phantom.app as phantom
 # Usage of the consts file is recommended
 import requests
-import json
-import datetime
-from boto3 import client, Session
+from boto3 import Session, client
 from botocore.config import Config
 from dateutil.tz import tzlocal
-import ast
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+from awsinspector_consts import *
 
 
 class RetVal(tuple):
@@ -239,8 +249,8 @@ class AwsInspectorConnector(BaseConnector):
             else:
                 failure_code = res.get('failedItems', {}).get(target, {}).get('failureCode')
                 error_message = failure_code if failure_code else 'Unknown error'
-                return action_result.set_status(
-                                phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment target: {0}. Error: {1}'.format(target, error_message))
+                return action_result.set_status(phantom.APP_ERROR,
+                    'Error occurred while fetching the details of the assessment target: {0}. Error: {1}'.format(target, error_message))
 
             for key, value in list(assessment_target.items()):
                 if isinstance(value, datetime.datetime):
@@ -301,8 +311,8 @@ class AwsInspectorConnector(BaseConnector):
             else:
                 failure_code = res.get('failedItems', {}).get(template, {}).get('failureCode')
                 error_message = failure_code if failure_code else 'Unknown error'
-                return action_result.set_status(
-                                phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment template: {0}. Error: {1}'.format(template, error_message))
+                return action_result.set_status(phantom.APP_ERROR,
+                    'Error occurred while fetching the details of the assessment template: {0}. Error: {1}'.format(template, error_message))
 
             for key, value in list(assessment_template.items()):
                 if isinstance(value, datetime.datetime):
@@ -316,6 +326,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['total_templates'] = action_result.get_data_size()
 
+        self.save_progress("Handle list templates succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_add_target(self, param):
@@ -356,6 +367,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['total_target_arn'] = action_result.get_data_size()
 
+        self.save_progress("Handle add target succeeded")
         return action_result.set_status(phantom.APP_SUCCESS, "Target successfully added")
 
     def _handle_run_assessment(self, param):
@@ -401,8 +413,8 @@ class AwsInspectorConnector(BaseConnector):
         else:
             failure_code = res.get('failedItems', {}).get(assessment_run_arn, {}).get('failureCode')
             error_message = failure_code if failure_code else 'Unknown error'
-            return action_result.set_status(
-                            phantom.APP_ERROR, 'Error occurred while fetching the details of the assessment run: {0}. Error: {1}'.format(assessment_run_arn, error_message))
+            return action_result.set_status(phantom.APP_ERROR,
+                'Error occurred while fetching the details of the assessment run: {0}. Error: {1}'.format(assessment_run_arn, error_message))
 
         for key, value in list(assessment_run.items()):
             if isinstance(value, datetime.datetime):
@@ -424,6 +436,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['assessment_run_arn'] = assessment_run_arn
 
+        self.save_progress("Handle run assessment succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_get_findings(self, param):
@@ -484,8 +497,8 @@ class AwsInspectorConnector(BaseConnector):
                         if isinstance(value, datetime.datetime):
                             finding[key] = str(value)
             else:
-                return action_result.set_status(
-                                phantom.APP_ERROR, 'Error occurred while fetching the details of the findings: {0}'.format(str(list_findings[:min(10, len(list_findings))])))
+                return action_result.set_status(phantom.APP_ERROR,
+                    'Error occurred while fetching the details of the findings: {0}'.format(str(list_findings[:min(10, len(list_findings))])))
 
             for finding_detail in findings:
                 action_result.add_data(finding_detail)
@@ -495,6 +508,7 @@ class AwsInspectorConnector(BaseConnector):
         summary = action_result.update_summary({})
         summary['total_findings'] = action_result.get_data_size()
 
+        self.save_progress("Handle get findings succeeded")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_delete_target(self, param):
@@ -528,6 +542,7 @@ class AwsInspectorConnector(BaseConnector):
 
         action_result.add_data(response)
 
+        self.save_progress("Handle delete target succeeded")
         return action_result.set_status(phantom.APP_SUCCESS, "Target is deleted successfully")
 
     def _paginator(self, method_name, limit, action_result, **kwargs):
@@ -605,8 +620,9 @@ class AwsInspectorConnector(BaseConnector):
 
 if __name__ == '__main__':
 
-    import pudb
     import argparse
+
+    import pudb
 
     pudb.set_trace()
 
@@ -615,12 +631,14 @@ if __name__ == '__main__':
     argparser.add_argument('input_test_json', help='Input Test JSON file')
     argparser.add_argument('-u', '--username', help='username', required=False)
     argparser.add_argument('-p', '--password', help='password', required=False)
+    argparser.add_argument('-v', '--verify', action='store_true', help='verify', required=False, default=False)
 
     args = argparser.parse_args()
     session_id = None
 
     username = args.username
     password = args.password
+    verify = args.verify
 
     if (username is not None and password is None):
 
@@ -632,7 +650,7 @@ if __name__ == '__main__':
         login_url = BaseConnector._get_phantom_base_url() + "login"
         try:
             print("Accessing the Login page")
-            response = requests.get(login_url, verify=False)
+            response = requests.get(login_url, verify=verify, timeout=AWSINSPECTOR_DEFAULT_TIMEOUT)
             csrftoken = response.cookies['csrftoken']
 
             data = dict()
@@ -645,11 +663,11 @@ if __name__ == '__main__':
             headers['Referer'] = login_url
 
             print("Logging into Platform to get the session id")
-            r2 = requests.post(login_url, verify=False, data=data, headers=headers)
+            r2 = requests.post(login_url, verify=verify, data=data, headers=headers, timeout=AWSINSPECTOR_DEFAULT_TIMEOUT)
             session_id = r2.cookies['sessionid']
         except Exception as e:
             print("Unable to get session id from the platform. Error: {0}".format(str(e)))
-            exit(1)
+            sys.exit(1)
 
     with open(args.input_test_json) as f:
         in_json = f.read()
@@ -666,4 +684,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)

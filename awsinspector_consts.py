@@ -1,8 +1,19 @@
 # File: awsinspector_consts.py
-# Copyright (c) 2019-2021 Splunk Inc.
 #
-# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
-# without a valid written license from Splunk Inc. is PROHIBITED.
+# Copyright (c) 2019-2022 Splunk Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+#
+#
 # Define your constants here
 AWSINSPECTOR_INVALID_LIMIT = 'Please provide non-zero positive integer in limit'
 AWSINSPECTOR_MAX_PER_PAGE_LIMIT = 500
@@ -23,3 +34,4 @@ AWSINSPECTOR_REGION_DICT = {
     }
 AWSINSPECTOR_BAD_ASSET_CONFIG_MSG = 'Please provide access keys or select assume role check box in asset configuration'
 AWSINSPECTOR_ROLE_CREDENTIALS_FAILURE_MSG = 'Failed to retrieve EC2 role credentials from instance'
+AWSINSPECTOR_DEFAULT_TIMEOUT = 30
