@@ -34,3 +34,4 @@ AWSINSPECTOR_REGION_DICT = {
     }
 AWSINSPECTOR_BAD_ASSET_CONFIG_MSG = 'Please provide access keys or select assume role check box in asset configuration'
 AWSINSPECTOR_ROLE_CREDENTIALS_FAILURE_MSG = 'Failed to retrieve EC2 role credentials from instance'
+AWSINSPECTOR_DEFAULT_TIMEOUT = 30
