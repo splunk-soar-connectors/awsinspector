@@ -32,6 +32,10 @@
                 "input_file": "wheels/shared/botocore-1.20.30-py2.py3-none-any.whl"
             },
             {
+                "module": "docutils",
+                "input_file": "wheels/shared/docutils-0.18-py2.py3-none-any.whl"
+            },
+            {
                 "module": "jmespath",
                 "input_file": "wheels/shared/jmespath-0.10.0-py2.py3-none-any.whl"
             },
