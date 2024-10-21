@@ -6,7 +6,7 @@ Connector Version: 2.2.11
 Product Vendor: AWS  
 Product Name: Inspector  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 5.2.0  
+Minimum Product Version: 6.2.2  
 
 This app integrates with AWS Inspector to perform security assessment actions
 
