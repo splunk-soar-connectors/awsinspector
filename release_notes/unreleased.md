@@ -1,2 +1,2 @@
 **Unreleased**
-* [PSAAS-20421] update dependencies
+* Updated dependencies to resolve security vulnerabilities [PSAAS-20421]
