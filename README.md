@@ -2,7 +2,7 @@
 # AWS Inspector
 
 Publisher: Splunk  
-Connector Version: 2.2.11  
+Connector Version: 2.2.12  
 Product Vendor: AWS  
 Product Name: Inspector  
 Product Version Supported (regex): ".\*"  
@@ -46,8 +46,8 @@ actions within a playbook. For more information, please see the [AWS Identity an
 documentation](https://docs.aws.amazon.com/iam/index.html) .
 
 
-### Configuration Variables
-The below configuration variables are required for this Connector to operate.  These variables are specified when configuring a Inspector asset in SOAR.
+### Configuration variables
+This table lists the configuration variables required to operate AWS Inspector. These variables are specified when configuring a Inspector asset in Splunk SOAR.
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
