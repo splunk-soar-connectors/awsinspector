@@ -6,12 +6,12 @@ Connector Version: 2.2.11
 Product Vendor: AWS  
 Product Name: Inspector  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 5.2.0  
+Minimum Product Version: 6.3.0  
 
 This app integrates with AWS Inspector to perform security assessment actions
 
 [comment]: # " File: README.md"
-[comment]: # "  Copyright (c) 2019-2022 Splunk Inc."
+[comment]: # "  Copyright (c) 2019-2024 Splunk Inc."
 [comment]: # ""
 [comment]: # "Licensed under the Apache License, Version 2.0 (the 'License');"
 [comment]: # "you may not use this file except in compliance with the License."
