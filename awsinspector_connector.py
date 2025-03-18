@@ -1,6 +1,6 @@
 # File: awsinspector_connector.py
 #
-# Copyright (c) 2019-2024 Splunk Inc.
+# Copyright (c) 2019-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,14 +39,13 @@ class RetVal(tuple):
 
 
 class AwsInspectorConnector(BaseConnector):
-
     def __init__(self):
         """
         The constructor for AwsInspectorConnector class.
         """
 
         # Call the BaseConnectors init first
-        super(AwsInspectorConnector, self).__init__()
+        super().__init__()
 
         self._state = None
         self._region = None
@@ -110,7 +109,6 @@ class AwsInspectorConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _handle_get_ec2_role(self):
-
         session = Session(region_name=self._region)
         credentials = session.get_credentials()
         return credentials
@@ -137,11 +135,10 @@ class AwsInspectorConnector(BaseConnector):
 
                 self.save_progress("Using temporary assume role credentials for action")
             except Exception as e:
-                return action_result.set_status(phantom.APP_ERROR, "Failed to get temporary credentials:{0}".format(e))
+                return action_result.set_status(phantom.APP_ERROR, f"Failed to get temporary credentials:{e}")
 
         try:
             if self._access_key and self._secret_key:
-
                 self.debug_print("Creating boto3 client with API keys")
                 self._client = client(
                     "inspector",
@@ -156,7 +153,7 @@ class AwsInspectorConnector(BaseConnector):
                 self._client = client("inspector", region_name=self._region, config=boto_config)
 
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Could not create boto3 client: {0}".format(e))
+            return action_result.set_status(phantom.APP_ERROR, f"Could not create boto3 client: {e}")
 
         return phantom.APP_SUCCESS
 
@@ -171,7 +168,7 @@ class AwsInspectorConnector(BaseConnector):
         try:
             boto_func = getattr(self._client, method)
         except AttributeError:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Invalid method: {0}".format(method)), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Invalid method: {method}"), None)
 
         try:
             resp_json = boto_func(**kwargs)
@@ -209,7 +206,7 @@ class AwsInspectorConnector(BaseConnector):
         :return: list of targets and their info for the specific AWS account
         """
 
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -250,7 +247,7 @@ class AwsInspectorConnector(BaseConnector):
                 error_message = failure_code if failure_code else "Unknown error"
                 return action_result.set_status(
                     phantom.APP_ERROR,
-                    "Error occurred while fetching the details of the assessment target: {0}. Error: {1}".format(target, error_message),
+                    f"Error occurred while fetching the details of the assessment target: {target}. Error: {error_message}",
                 )
 
             for key, value in list(assessment_target.items()):
@@ -271,7 +268,7 @@ class AwsInspectorConnector(BaseConnector):
         :return: list of templates and their info for the specific AWS account
         """
 
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -314,7 +311,7 @@ class AwsInspectorConnector(BaseConnector):
                 error_message = failure_code if failure_code else "Unknown error"
                 return action_result.set_status(
                     phantom.APP_ERROR,
-                    "Error occurred while fetching the details of the assessment template: {0}. Error: {1}".format(template, error_message),
+                    f"Error occurred while fetching the details of the assessment template: {template}. Error: {error_message}",
                 )
 
             for key, value in list(assessment_template.items()):
@@ -339,7 +336,7 @@ class AwsInspectorConnector(BaseConnector):
         :return: ARN of the assessment target that is created by this action.
         """
 
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -380,7 +377,7 @@ class AwsInspectorConnector(BaseConnector):
         :return: ARN of the assessment run and their information
         """
 
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -418,7 +415,7 @@ class AwsInspectorConnector(BaseConnector):
             error_message = failure_code if failure_code else "Unknown error"
             return action_result.set_status(
                 phantom.APP_ERROR,
-                "Error occurred while fetching the details of the assessment run: {0}. Error: {1}".format(assessment_run_arn, error_message),
+                f"Error occurred while fetching the details of the assessment run: {assessment_run_arn}. Error: {error_message}",
             )
 
         for key, value in list(assessment_run.items()):
@@ -451,7 +448,7 @@ class AwsInspectorConnector(BaseConnector):
         :return: list of findings and their information
         """
 
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -502,7 +499,7 @@ class AwsInspectorConnector(BaseConnector):
             else:
                 return action_result.set_status(
                     phantom.APP_ERROR,
-                    "Error occurred while fetching the details of the findings: {0}".format(str(list_findings[: min(10, len(list_findings))])),
+                    f"Error occurred while fetching the details of the findings: {list_findings[: min(10, len(list_findings))]!s}",
                 )
 
             for finding_detail in findings:
@@ -523,7 +520,7 @@ class AwsInspectorConnector(BaseConnector):
         :return: Status (phantom.APP_ERROR/phantom.APP_SUCCESS), target is deleted successfully
         """
 
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         action_result = self.add_action_result(ActionResult(dict(param)))
 
@@ -622,7 +619,6 @@ class AwsInspectorConnector(BaseConnector):
 
 
 if __name__ == "__main__":
-
     import argparse
 
     import pudb
@@ -644,7 +640,6 @@ if __name__ == "__main__":
     verify = args.verify
 
     if username is not None and password is None:
-
         # User specified a username but not a password, so ask
         import getpass
 
@@ -663,14 +658,14 @@ if __name__ == "__main__":
             data["csrfmiddlewaretoken"] = csrftoken
 
             headers = dict()
-            headers["Cookie"] = "csrftoken={0}".format(csrftoken)
+            headers["Cookie"] = f"csrftoken={csrftoken}"
             headers["Referer"] = login_url
 
             print("Logging into Platform to get the session id")
             r2 = requests.post(login_url, verify=verify, data=data, headers=headers, timeout=AWSINSPECTOR_DEFAULT_TIMEOUT)
             session_id = r2.cookies["sessionid"]
         except Exception as e:
-            print("Unable to get session id from the platform. Error: {0}".format(str(e)))
+            print(f"Unable to get session id from the platform. Error: {e!s}")
             sys.exit(1)
 
     with open(args.input_test_json) as f:

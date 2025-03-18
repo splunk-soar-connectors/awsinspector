@@ -1,16 +1,17 @@
 {% extends 'widgets/widget_template.html' %}
 {% load custom_template %}
-
-{% block custom_title_prop %}{% if title_logo %}style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"{% endif %}{% endblock %}
+{% block custom_title_prop %}
+  {% if title_logo %}
+    style="background-size: auto 60%; background-position: 50%; background-repeat: no-repeat; background-image: url('/app_resource/{{ title_logo }}');"
+  {% endif %}
+{% endblock %}
 {% block title1 %}{{ title1 }}{% endblock %}
 {% block title2 %}{{ title2 }}{% endblock %}
-{% block custom_tools %}
-{% endblock %}
-
-{% block widget_content %} <!-- Main Start Block -->
-
-<!-- File: awsinspector_list_templates.html
-  Copyright (c) 2019-2024 Splunk Inc.
+{% block custom_tools %}{% endblock %}
+{% block widget_content %}
+  <!-- Main Start Block -->
+  <!-- File: awsinspector_list_templates.html
+  Copyright (c) 2019-2025 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,8 +24,7 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
 either express or implied. See the License for the specific language governing permissions
 and limitations under the License.
 -->
-<style>
-
+  <style>
     .awsinspector a:hover {
         text-decoration:underline;
     }
@@ -73,100 +73,93 @@ and limitations under the License.
     .awsinspector .dataTable .glyphicon.glyphicon-dot:before {
        content: "\25cf"; font-size: 10px;
    }
-</style>
-
-<div class="awsinspector" style="overflow: auto; width: 100% height: 100%; padding-left:10px; padding-right:10px">
+  </style>
+  <div class="awsinspector"
+       style="overflow: auto;
+              width: 100% height: 100%;
+              padding-left:10px;
+              padding-right:10px">
     <!-- Main Div -->
-
-    {% for result in results %} <!-- loop for each result -->
-        {% if not result.data %}
-            <h4 class="wf-h4-style">No data found</h4>
-        {% else %}
-            <div class="info">
-                <h4 class="wf-h4-style">Info</h4>
-                <table class="wf-table-vertical">
-                    {% if result.param.limit %}
-                        <tr>
-                            <td>Limit</td>
-                            <td>
-                                {{ result.param.limit }}
-                            </td>
-                        </tr>
-                    {% endif %}
-                    {% if result.param.target_arns %}
-                        <tr>
-                            <td>Target ARNs</td>
-                            <td class="widget-td">
-                                <span class="glyphicon glyphicon-dot"></span>&nbsp;
-                                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector target arn'],
-                                    'value': '{{ result.param.target_arns }}' }], 0, {{ container.id }}, null, false);">
-                                {{ result.param.target_arns }}
-                                &nbsp;
-                                <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                </a>
-                            </td>
-                        </tr>
-                    {% endif %}
-                    {% if result.param.template_name %}
-                        <tr>
-                            <td>Template Name</td>
-                            <td>
-                                {{ result.param.template_name }}
-                            </td>
-                        </tr>
-                    {% endif %}
-                </table>
-            </div>
-
-            <div class="data">
-                <h4 class="wf-h4-style">Data</h4>
-                <table class="phantom-table dataTable">
-                    <thead>
-                        <th class="widget-th">Target ARNs</th>
-                        <th class="widget-th">Template Name</th>
-                        <th class="widget-th">Template ARN</th>
-                        <th class="widget-th">Rules Package ARNs</th>
-                    </thead>
-                    {% for template_data in result.data %}
-                        <tr>
-                            <td>
-                                <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector target arn'],
-                                'value':'{{ template_data.assessmentTargetArn }}' }], 0,
-                                {{ container.id }}, null, false);">
-                                    {{ template_data.assessmentTargetArn }}
-                                    &nbsp;
-                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                </a>
-                            </td>
-                            <td>
-                                {{ template_data.name }}
-                            </td>
-                            <td>
-                            <a href="javascript:;" onclick="context_menu(this, [{'contains': ['aws inspector template arn'],
-                                'value':'{{ template_data.arn }}' }], 0,
-                                {{ container.id }}, null, false);">
-                                    {{ template_data.arn }}
-                                    &nbsp;
-                                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
-                                </a>
-                            </td>
-                            <td>
-                                {% for rule in template_data.rulesPackageArns %}
-                                    <span class="glyphicon glyphicon-dot"></span>&nbsp;
-                                    {{ rule }}
-                                    &nbsp;
-                                    {% if not forloop.last %}<br/>
-                                    {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
-            </div>
-        {% endif %}
+    {% for result in results %}
+      <!-- loop for each result -->
+      {% if not result.data %}
+        <h4 class="wf-h4-style">No data found</h4>
+      {% else %}
+        <div class="info">
+          <h4 class="wf-h4-style">Info</h4>
+          <table class="wf-table-vertical">
+            {% if result.param.limit %}
+              <tr>
+                <td>Limit</td>
+                <td>{{ result.param.limit }}</td>
+              </tr>
+            {% endif %}
+            {% if result.param.target_arns %}
+              <tr>
+                <td>Target ARNs</td>
+                <td class="widget-td">
+                  <span class="glyphicon glyphicon-dot"></span>&nbsp;
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['aws inspector target arn'], 'value': '{{ result.param.target_arns }}' }], 0, {{ container.id }}, null, false);">
+                    {{ result.param.target_arns }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
+                </td>
+              </tr>
+            {% endif %}
+            {% if result.param.template_name %}
+              <tr>
+                <td>Template Name</td>
+                <td>{{ result.param.template_name }}</td>
+              </tr>
+            {% endif %}
+          </table>
+        </div>
+        <div class="data">
+          <h4 class="wf-h4-style">Data</h4>
+          <table class="phantom-table dataTable">
+            <thead>
+              <th class="widget-th">Target ARNs</th>
+              <th class="widget-th">Template Name</th>
+              <th class="widget-th">Template ARN</th>
+              <th class="widget-th">Rules Package ARNs</th>
+            </thead>
+            {% for template_data in result.data %}
+              <tr>
+                <td>
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['aws inspector target arn'], 'value':'{{ template_data.assessmentTargetArn }}' }], 0, {{ container.id }}, null, false);">
+                    {{ template_data.assessmentTargetArn }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
+                </td>
+                <td>{{ template_data.name }}</td>
+                <td>
+                  <a href="javascript:;"
+                     onclick="context_menu(this, [{'contains': ['aws inspector template arn'], 'value':'{{ template_data.arn }}' }], 0, {{ container.id }}, null, false);">
+                    {{ template_data.arn }}
+                    &nbsp;
+                    <span class="fa fa-caret-down" style="font-size: smaller;"></span>
+                  </a>
+                </td>
+                <td>
+                  {% for rule in template_data.rulesPackageArns %}
+                    <span class="glyphicon glyphicon-dot"></span>&nbsp;
+                    {{ rule }}
+                    &nbsp;
+                    {% if not forloop.last %}<br />{% endif %}
+                  {% endfor %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      {% endif %}
     {% endfor %}
-</div>
-<script>
+  </div>
+  <script>
 $.extend(true, $.fn.dataTable.defaults, {
     "searching": true,
     "bLengthChange": false,
@@ -185,6 +178,5 @@ $.extend(true, $.fn.dataTable.defaults, {
   });
   $('.dataTable').DataTable();
 
-</script>
-
+  </script>
 {% endblock %}
