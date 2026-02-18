@@ -1,7 +1,7 @@
 # AWS Inspector
 
 Publisher: Splunk <br>
-Connector Version: 2.2.12 <br>
+Connector Version: 2.2.13 <br>
 Product Vendor: AWS <br>
 Product Name: Inspector <br>
 Minimum Product Version: 6.3.0
