@@ -92,7 +92,7 @@ action_result.summary.total_target_arn | numeric | | 1 |
 action_result.message | string | | Target successfully added |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'AKIAIOSFODNN7EXAMPLE', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', 'SessionToken': 'EXAMPLEKEYTEST///////////wEaDFRU0s4AVrw0k0oYICK4ATAzOqzAkg9bHY29lYmP59UvVOHjLufOy4s7SnAzOxGqGIXnukLis4TWNhrJl5R5nYyimrm6K/9d0Cw2SWEXAMPLEEJHWJ+yY5Qk2QpWctS2BGn4n+G8cD6zEweCCMj+ScI5p8n7YI4wOdvXvOsVMmjV6F09Ujqr1w+NwoKXlglznXGs/7Q1kNZOMiioEhGUyoiHbQb37GCKslDK+oqe0KNaUKQ96YCepaLgMbMquDgdAM8I0TTxUO0o5ILF/gUyLT04R7QlOfktkdh6Qt0atTSEXAMPLEKEYTESTJ8jjnxGQIikPRToL2ZEXAMPLE=='} |
+action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'delete target'
 
@@ -121,7 +121,7 @@ action_result.summary | string | | |
 action_result.message | string | | Target is deleted successfully |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'AKIAIOSFODNN7EXAMPLE', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', 'SessionToken': 'EXAMPLEKEYTEST///////////wEaDFRU0s4AVrw0k0oYICK4ATAzOqzAkg9bHY29lYmP59UvVOHjLufOy4s7SnAzOxGqGIXnukLis4TWNhrJl5R5nYyimrm6K/9d0Cw2SWEXAMPLEEJHWJ+yY5Qk2QpWctS2BGn4n+G8cD6zEweCCMj+ScI5p8n7YI4wOdvXvOsVMmjV6F09Ujqr1w+NwoKXlglznXGs/7Q1kNZOMiioEhGUyoiHbQb37GCKslDK+oqe0KNaUKQ96YCepaLgMbMquDgdAM8I0TTxUO0o5ILF/gUyLT04R7QlOfktkdh6Qt0atTSEXAMPLEKEYTESTJ8jjnxGQIikPRToL2ZEXAMPLE=='} |
+action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'list templates'
 
@@ -160,7 +160,7 @@ action_result.summary.total_templates | numeric | | 2 |
 action_result.message | string | | Total templates: 2 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'AKIAIOSFODNN7EXAMPLE', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', 'SessionToken': 'EXAMPLEKEYTEST///////////wEaDFRU0s4AVrw0k0oYICK4ATAzOqzAkg9bHY29lYmP59UvVOHjLufOy4s7SnAzOxGqGIXnukLis4TWNhrJl5R5nYyimrm6K/9d0Cw2SWEXAMPLEEJHWJ+yY5Qk2QpWctS2BGn4n+G8cD6zEweCCMj+ScI5p8n7YI4wOdvXvOsVMmjV6F09Ujqr1w+NwoKXlglznXGs/7Q1kNZOMiioEhGUyoiHbQb37GCKslDK+oqe0KNaUKQ96YCepaLgMbMquDgdAM8I0TTxUO0o5ILF/gUyLT04R7QlOfktkdh6Qt0atTSEXAMPLEKEYTESTJ8jjnxGQIikPRToL2ZEXAMPLE=='} |
+action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'list targets'
 
@@ -194,7 +194,7 @@ action_result.summary.total_targets | numeric | | 2 |
 action_result.message | string | | Total targets: 1 Total targets: 2 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'AKIAIOSFODNN7EXAMPLE', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', 'SessionToken': 'EXAMPLEKEYTEST///////////wEaDFRU0s4AVrw0k0oYICK4ATAzOqzAkg9bHY29lYmP59UvVOHjLufOy4s7SnAzOxGqGIXnukLis4TWNhrJl5R5nYyimrm6K/9d0Cw2SWEXAMPLEEJHWJ+yY5Qk2QpWctS2BGn4n+G8cD6zEweCCMj+ScI5p8n7YI4wOdvXvOsVMmjV6F09Ujqr1w+NwoKXlglznXGs/7Q1kNZOMiioEhGUyoiHbQb37GCKslDK+oqe0KNaUKQ96YCepaLgMbMquDgdAM8I0TTxUO0o5ILF/gUyLT04R7QlOfktkdh6Qt0atTSEXAMPLEKEYTESTJ8jjnxGQIikPRToL2ZEXAMPLE=='} |
+action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'run assessment'
 
@@ -236,7 +236,7 @@ action_result.summary.assessment_run_arn | numeric | `aws inspector assessment r
 action_result.message | string | | Assessment run arn: arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-D2egFbHs |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'AKIAIOSFODNN7EXAMPLE', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', 'SessionToken': 'EXAMPLEKEYTEST///////////wEaDFRU0s4AVrw0k0oYICK4ATAzOqzAkg9bHY29lYmP59UvVOHjLufOy4s7SnAzOxGqGIXnukLis4TWNhrJl5R5nYyimrm6K/9d0Cw2SWEXAMPLEEJHWJ+yY5Qk2QpWctS2BGn4n+G8cD6zEweCCMj+ScI5p8n7YI4wOdvXvOsVMmjV6F09Ujqr1w+NwoKXlglznXGs/7Q1kNZOMiioEhGUyoiHbQb37GCKslDK+oqe0KNaUKQ96YCepaLgMbMquDgdAM8I0TTxUO0o5ILF/gUyLT04R7QlOfktkdh6Qt0atTSEXAMPLEKEYTESTJ8jjnxGQIikPRToL2ZEXAMPLE=='} |
+action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'get findings'
 
@@ -303,13 +303,13 @@ action_result.summary.total_templates | numeric | | 233 |
 action_result.message | string | | Total findings: 5 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'AKIAIOSFODNN7EXAMPLE', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', 'SessionToken': 'EXAMPLEKEYTEST///////////wEaDFRU0s4AVrw0k0oYICK4ATAzOqzAkg9bHY29lYmP59UvVOHjLufOy4s7SnAzOxGqGIXnukLis4TWNhrJl5R5nYyimrm6K/9d0Cw2SWEXAMPLEEJHWJ+yY5Qk2QpWctS2BGn4n+G8cD6zEweCCMj+ScI5p8n7YI4wOdvXvOsVMmjV6F09Ujqr1w+NwoKXlglznXGs/7Q1kNZOMiioEhGUyoiHbQb37GCKslDK+oqe0KNaUKQ96YCepaLgMbMquDgdAM8I0TTxUO0o5ILF/gUyLT04R7QlOfktkdh6Qt0atTSEXAMPLEKEYTESTJ8jjnxGQIikPRToL2ZEXAMPLE=='} |
+action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
