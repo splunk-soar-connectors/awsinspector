@@ -17,6 +17,10 @@
 # Define your constants here
 AWSINSPECTOR_INVALID_LIMIT = "Please provide non-zero positive integer in limit"
 AWSINSPECTOR_MAX_PER_PAGE_LIMIT = 500
+AWSINSPECTOR_MAX_PAGINATION_ITEMS = 100000
+AWSINSPECTOR_MAX_PAGINATION_PAGES = 1000
+AWSINSPECTOR_PAGINATION_LIMIT_EXCEEDED = "Pagination exceeded the connector safety limit"
+AWSINSPECTOR_PAGINATION_TOKEN_REPEATED = "Pagination token did not advance"
 AWSINSPECTOR_JSON_REGION = "region"
 AWSINSPECTOR_REGION_DICT = {
     "US East (N. Virginia)": "us-east-1",
