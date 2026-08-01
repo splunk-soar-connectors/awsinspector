@@ -59,6 +59,10 @@ class AwsInspectorConnector(BaseConnector):
         # modify this as you deem fit.
         self._base_url = None
 
+    @staticmethod
+    def _sanitize_action_parameters(param):
+        return {key: value for key, value in param.items() if key != "credentials"}
+
     def initialize(self):
         """This is an optional function that can be implemented by the AppConnector derived class. Since the
         configuration dictionary is already validated by the time this function is called, it's a good place to do any
@@ -183,7 +187,7 @@ class AwsInspectorConnector(BaseConnector):
         :param param: Dictionary of input parameters
         :return: Status(phantom.APP_SUCCESS/phantom.APP_ERROR)
         """
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         self.save_progress("Connecting to endpoint")
 
@@ -208,7 +212,7 @@ class AwsInspectorConnector(BaseConnector):
 
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -275,7 +279,7 @@ class AwsInspectorConnector(BaseConnector):
 
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -348,7 +352,7 @@ class AwsInspectorConnector(BaseConnector):
 
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -389,7 +393,7 @@ class AwsInspectorConnector(BaseConnector):
 
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -460,7 +464,7 @@ class AwsInspectorConnector(BaseConnector):
 
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
@@ -537,7 +541,7 @@ class AwsInspectorConnector(BaseConnector):
 
         self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
-        action_result = self.add_action_result(ActionResult(dict(param)))
+        action_result = self.add_action_result(ActionResult(self._sanitize_action_parameters(param)))
 
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
