@@ -194,7 +194,7 @@ class AwsInspectorConnector(BaseConnector):
         if phantom.is_fail(self._create_client(action_result, param)):
             return action_result.get_status()
 
-        ret_val, response = self._make_boto_call(action_result, "list_assessment_targets", maxResults=1)
+        ret_val, _response = self._make_boto_call(action_result, "list_assessment_targets", maxResults=1)
 
         if phantom.is_fail(ret_val):
             self.save_progress("Test Connectivity Failed")
