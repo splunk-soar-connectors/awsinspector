@@ -1,6 +1,6 @@
 # File: awsinspector_connector.py
 #
-# Copyright (c) 2019-2025 Splunk Inc.
+# Copyright (c) 2019-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -216,7 +216,12 @@ class AwsInspectorConnector(BaseConnector):
         target_name = param.get("target_name")
         limit = param.get("limit")
 
-        if (limit and not str(limit).isdigit()) or limit == 0:
+        try:
+            limit = int(limit) if limit is not None else None
+        except (TypeError, ValueError):
+            return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
+
+        if limit is not None and (limit <= 0 or limit > AWSINSPECTOR_MAX_PAGINATION_ITEMS):
             return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
 
         filter = {}
@@ -283,7 +288,12 @@ class AwsInspectorConnector(BaseConnector):
         template_name = param.get("template_name")
         limit = param.get("limit")
 
-        if (limit and not str(limit).isdigit()) or limit == 0:
+        try:
+            limit = int(limit) if limit is not None else None
+        except (TypeError, ValueError):
+            return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
+
+        if limit is not None and (limit <= 0 or limit > AWSINSPECTOR_MAX_PAGINATION_ITEMS):
             return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
 
         filter = {}
@@ -471,7 +481,12 @@ class AwsInspectorConnector(BaseConnector):
 
         limit = param.get("limit")
 
-        if (limit and not str(limit).isdigit()) or limit == 0:
+        try:
+            limit = int(limit) if limit is not None else None
+        except (TypeError, ValueError):
+            return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
+
+        if limit is not None and (limit <= 0 or limit > AWSINSPECTOR_MAX_PAGINATION_ITEMS):
             return action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_INVALID_LIMIT)
 
         kwargs = {}
@@ -558,6 +573,8 @@ class AwsInspectorConnector(BaseConnector):
 
         list_items = list()
         next_token = None
+        seen_tokens = set()
+        page_count = 0
         dic_map = {
             "list_targets": "assessmentTargetArns",
             "list_templates": "assessmentTemplateArns",
@@ -568,6 +585,11 @@ class AwsInspectorConnector(BaseConnector):
         set_name = dic_map.get(self.get_action_identifier())
 
         while True:
+            page_count += 1
+            if page_count > AWSINSPECTOR_MAX_PAGINATION_PAGES:
+                action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_PAGINATION_LIMIT_EXCEEDED)
+                return None
+
             if next_token:
                 ret_val, response = self._make_boto_call(
                     action_result, method_name, nextToken=next_token, maxResults=AWSINSPECTOR_MAX_PER_PAGE_LIMIT, **kwargs
@@ -587,6 +609,15 @@ class AwsInspectorConnector(BaseConnector):
             next_token = response.get("nextToken")
             if not next_token:
                 break
+
+            if len(list_items) >= AWSINSPECTOR_MAX_PAGINATION_ITEMS:
+                action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_PAGINATION_LIMIT_EXCEEDED)
+                return None
+
+            if next_token in seen_tokens:
+                action_result.set_status(phantom.APP_ERROR, AWSINSPECTOR_PAGINATION_TOKEN_REPEATED)
+                return None
+            seen_tokens.add(next_token)
 
         return list_items
 
