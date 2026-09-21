@@ -1,4 +1,1 @@
 **Unreleased**
-
-* **Breaking change:** Remove action-scoped credential fields from action output schemas so temporary AWS credentials are not retained in action results.
-* Require Splunk SOAR 8.6.0 or later, where password-typed action parameters are implemented by the platform.
