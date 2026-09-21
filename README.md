@@ -4,7 +4,7 @@ Publisher: Splunk <br>
 Connector Version: 2.2.14 <br>
 Product Vendor: AWS <br>
 Product Name: Inspector <br>
-Minimum Product Version: 6.3.0
+Minimum Product Version: 8.6.0
 
 This app integrates with AWS Inspector to perform security assessment actions
 
@@ -78,7 +78,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **target_name** | required | Name of the target | string | `aws inspector target name` |
 **resource_group_arn** | optional | Resource Group ARN used for creating the assessment target | string | `aws inspector resource group arn` `aws arn` |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -92,7 +92,6 @@ action_result.summary.total_target_arn | numeric | | 1 |
 action_result.message | string | | Target successfully added |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'delete target'
 
@@ -108,7 +107,7 @@ Deleting an assessment target will also delete corresponding templates, runs, an
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **target_arn** | required | ARN of the assessment target | string | `aws inspector target arn` `aws arn` |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -121,7 +120,6 @@ action_result.summary | string | | |
 action_result.message | string | | Target is deleted successfully |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'list templates'
 
@@ -139,7 +137,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **target_arns** | optional | List of target ARNs | string | `aws inspector target arn` `aws arn` |
 **template_name** | optional | Assessment template name pattern | string | |
 **limit** | optional | Maximum number of templates to be fetched | numeric | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -160,7 +158,6 @@ action_result.summary.total_templates | numeric | | 2 |
 action_result.message | string | | Total templates: 2 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'list targets'
 
@@ -177,7 +174,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **target_name** | optional | Assessment target name pattern | string | `aws inspector target name` |
 **limit** | optional | Maximum number of targets to be fetched | numeric | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -194,7 +191,6 @@ action_result.summary.total_targets | numeric | | 2 |
 action_result.message | string | | Total targets: 1 Total targets: 2 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'run assessment'
 
@@ -211,7 +207,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
 **template_arn** | required | Assessment template ARN to start the assessment run of | string | `aws inspector template arn` `aws arn` |
 **assessment_run_name** | optional | Name of the assessment run | string | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -236,7 +232,6 @@ action_result.summary.assessment_run_arn | numeric | `aws inspector assessment r
 action_result.message | string | | Assessment run arn: arn:aws:inspector:us-east-1:849257271967:target/0-evshZX5K/template/0-QRxUrrdI/run/0-D2egFbHs |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ## action: 'get findings'
 
@@ -252,7 +247,7 @@ PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 **assessment_run_arns** | optional | List of the assessment runs ARNs (Max Limit: 50) | string | `aws inspector assessment run arn` `aws arn` |
 **severities** | optional | List of severity values (case-sensitive) (Max Limit: 50) | string | |
 **limit** | optional | Maximum number of findings to be fetched | numeric | |
-**credentials** | optional | Assumed role credentials | string | `aws credentials` |
+**credentials** | optional | Assumed role credentials | password | `aws credentials` |
 
 #### Action Output
 
@@ -303,7 +298,6 @@ action_result.summary.total_templates | numeric | | 233 |
 action_result.message | string | | Total findings: 5 |
 summary.total_objects | numeric | | 1 |
 summary.total_objects_successful | numeric | | 1 |
-action_result.parameter.credentials | string | `aws credentials` | {'AccessKeyId': 'REDACTED', 'Expiration': '2021-06-07 22:28:04', 'SecretAccessKey': 'REDACTED', 'SessionToken': 'REDACTED'} |
 
 ______________________________________________________________________
 
